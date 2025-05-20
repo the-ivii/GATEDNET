@@ -1,81 +1,77 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Modal from '../common/Modal';
 import './UpdatesModal.css';
 
-// Mock data - replace with actual data fetching
-const mockUpdates = [
-  {
-    id: 1,
-    title: 'New Playground Equipment',
-    description: 'The society has approved installation of new playground equipment next month.',
-    date: '2023-11-05',
-    category: 'Amenities'
-  },
-  {
-    id: 2,
-    title: 'Water Supply Interruption',
-    description: 'Scheduled water supply interruption on November 15th from 10AM to 2PM for maintenance.',
-    date: '2023-11-10',
-    category: 'Maintenance'
-  },
-  {
-    id: 3,
-    title: 'Annual General Meeting',
-    description: 'The AGM is scheduled for December 5th at 6PM in the community hall.',
-    date: '2023-11-08',
-    category: 'Meetings'
-  }
-];
+const API_BASE_URL = 'http://localhost:3000/api';
 
 const UpdatesModal = ({ isOpen, onClose }) => {
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulate fetching updates
     const fetchUpdates = async () => {
+      if (!isOpen) return;
+      
       setLoading(true);
+      setError(null);
       try {
-        // Replace with actual API call
-        setTimeout(() => {
-          setUpdates(mockUpdates);
-          setLoading(false);
-        }, 500);
+        const response = await axios.get(`${API_BASE_URL}/updates`);
+        setUpdates(response.data.data);
       } catch (error) {
         console.error('Error fetching updates:', error);
+        setError('Failed to fetch updates. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
-    if (isOpen) {
-      fetchUpdates();
-    }
+    fetchUpdates();
   }, [isOpen]);
 
   return (
     <Modal 
       isOpen={isOpen} 
       onClose={onClose} 
-      title="Recent Updates" 
-      width="600px"
+      title="Community Updates" 
+      width="500px"
     >
       {loading ? (
         <div className="loading-spinner">Loading updates...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
       ) : (
         <div className="updates-list">
           {updates.length === 0 ? (
-            <div className="no-updates">No updates available</div>
+            <div className="no-updates">No updates available at the moment</div>
           ) : (
             updates.map(update => (
-              <div key={update.id} className="update-card">
+              <div key={update._id} className="update-item">
                 <div className="update-header">
-                  <span className={`update-category ${update.category.toLowerCase()}`}>
-                    {update.category}
+                  <h3 className="update-title">{update.title}</h3>
+                  <span className="update-date">
+                    {new Date(update.createdAt).toLocaleDateString()}
                   </span>
-                  <span className="update-date">{update.date}</span>
                 </div>
-                <h3 className="update-title">{update.title}</h3>
                 <p className="update-description">{update.description}</p>
+                {update.image && (
+                  <img 
+                    src={update.image} 
+                    alt={update.title} 
+                    className="update-image"
+                  />
+                )}
+                {update.link && (
+                  <a 
+                    href={update.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="update-link"
+                  >
+                    Learn More
+                  </a>
+                )}
               </div>
             ))
           )}

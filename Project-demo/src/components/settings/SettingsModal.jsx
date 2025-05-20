@@ -1,69 +1,108 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Modal from '../common/Modal';
 import './SettingsModal.css';
 
+const API_BASE_URL = 'http://localhost:3000/api';
+
 const SettingsModal = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
-    societyName: '',
-    flatNumber: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+  const [settings, setSettings] = useState({
+    notifications: {
+      email: true,
+      push: true,
+      sms: false
+    },
+    privacy: {
+      showProfile: true,
+      showContact: false
+    },
+    theme: 'light'
   });
-  
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-    
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
+  useEffect(() => {
+    const fetchSettings = async () => {
+      if (!isOpen) return;
+      
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(`${API_BASE_URL}/settings`);
+        setSettings(response.data.data);
+      } catch (error) {
+        console.error('Error fetching settings:', error);
+        setError('Failed to fetch settings. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, [isOpen]);
+
+  const handleNotificationChange = async (type) => {
+    try {
+      const updatedSettings = {
+        ...settings,
+        notifications: {
+          ...settings.notifications,
+          [type]: !settings.notifications[type]
+        }
+      };
+
+      await axios.put(`${API_BASE_URL}/settings/notifications`, {
+        type,
+        enabled: !settings.notifications[type]
       });
+
+      setSettings(updatedSettings);
+      setSuccess('Notification settings updated successfully');
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error) {
+      console.error('Error updating notification settings:', error);
+      setError('Failed to update notification settings. Please try again.');
     }
   };
 
-  const validateForm = () => {
-    let valid = true;
-    const newErrors = {};
+  const handlePrivacyChange = async (type) => {
+    try {
+      const updatedSettings = {
+        ...settings,
+        privacy: {
+          ...settings.privacy,
+          [type]: !settings.privacy[type]
+        }
+      };
 
-    // Password validation
-    if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-      valid = false;
+      await axios.put(`${API_BASE_URL}/settings/privacy`, {
+        type,
+        enabled: !settings.privacy[type]
+      });
+
+      setSettings(updatedSettings);
+      setSuccess('Privacy settings updated successfully');
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error) {
+      console.error('Error updating privacy settings:', error);
+      setError('Failed to update privacy settings. Please try again.');
     }
-
-    if (formData.newPassword && formData.newPassword.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters';
-      valid = false;
-    }
-
-    if (formData.newPassword && !formData.currentPassword) {
-      newErrors.currentPassword = 'Current password is required';
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      // Save changes logic would go here
-      console.log('Saving settings:', formData);
-      // Mock successful save
-      setTimeout(() => {
-        alert('Settings saved successfully!');
-        onClose();
-      }, 500);
+  const handleThemeChange = async (theme) => {
+    try {
+      await axios.put(`${API_BASE_URL}/settings/theme`, { theme });
+
+      setSettings({
+        ...settings,
+        theme
+      });
+      setSuccess('Theme updated successfully');
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error) {
+      console.error('Error updating theme:', error);
+      setError('Failed to update theme. Please try again.');
     }
   };
 
@@ -72,84 +111,93 @@ const SettingsModal = ({ isOpen, onClose }) => {
       isOpen={isOpen} 
       onClose={onClose} 
       title="Settings" 
-      width="450px"
-      className="settings-modal"
+      width="500px"
     >
-      <div className="settings-container">
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="societyName">Name Society</label>
-            <input
-              type="text"
-              id="societyName"
-              name="societyName"
-              value={formData.societyName}
-              onChange={handleChange}
-              placeholder="Enter society name"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="flatNumber">Flat Number</label>
-            <input
-              type="text"
-              id="flatNumber"
-              name="flatNumber"
-              value={formData.flatNumber}
-              onChange={handleChange}
-              placeholder="Enter your flat number"
-            />
-          </div>
-
-          <div className="form-section">
-            <h3>Update Your Password</h3>
-            
-            <div className="form-group">
-              <label htmlFor="currentPassword">Current Password</label>
-              <input
-                type="password"
-                id="currentPassword"
-                name="currentPassword"
-                value={formData.currentPassword}
-                onChange={handleChange}
-                placeholder="Current password"
-                className={errors.currentPassword ? 'error' : ''}
-              />
-              {errors.currentPassword && <span className="error-message">{errors.currentPassword}</span>}
+      {loading ? (
+        <div className="loading-spinner">Loading settings...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : (
+        <div className="settings-container">
+          {success && <div className="success-message">{success}</div>}
+          
+          <section className="settings-section">
+            <h3>Notification Preferences</h3>
+            <div className="settings-options">
+              <label className="setting-option">
+                <input
+                  type="checkbox"
+                  checked={settings.notifications.email}
+                  onChange={() => handleNotificationChange('email')}
+                />
+                Email Notifications
+              </label>
+              <label className="setting-option">
+                <input
+                  type="checkbox"
+                  checked={settings.notifications.push}
+                  onChange={() => handleNotificationChange('push')}
+                />
+                Push Notifications
+              </label>
+              <label className="setting-option">
+                <input
+                  type="checkbox"
+                  checked={settings.notifications.sms}
+                  onChange={() => handleNotificationChange('sms')}
+                />
+                SMS Notifications
+              </label>
             </div>
+          </section>
 
-            <div className="form-group">
-              <label htmlFor="newPassword">New Password</label>
-              <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleChange}
-                placeholder="New password"
-                className={errors.newPassword ? 'error' : ''}
-              />
-              {errors.newPassword && <span className="error-message">{errors.newPassword}</span>}
+          <section className="settings-section">
+            <h3>Privacy Settings</h3>
+            <div className="settings-options">
+              <label className="setting-option">
+                <input
+                  type="checkbox"
+                  checked={settings.privacy.showProfile}
+                  onChange={() => handlePrivacyChange('showProfile')}
+                />
+                Show Profile to Other Residents
+              </label>
+              <label className="setting-option">
+                <input
+                  type="checkbox"
+                  checked={settings.privacy.showContact}
+                  onChange={() => handlePrivacyChange('showContact')}
+                />
+                Show Contact Information
+              </label>
             </div>
+          </section>
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm New Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm new password"
-                className={errors.confirmPassword ? 'error' : ''}
-              />
-              {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
+          <section className="settings-section">
+            <h3>Theme</h3>
+            <div className="settings-options">
+              <label className="setting-option">
+                <input
+                  type="radio"
+                  name="theme"
+                  checked={settings.theme === 'light'}
+                  onChange={() => handleThemeChange('light')}
+                />
+                Light
+              </label>
+              <label className="setting-option">
+                <input
+                  type="radio"
+                  name="theme"
+                  checked={settings.theme === 'dark'}
+                  onChange={() => handleThemeChange('dark')}
+                />
+                Dark
+              </label>
             </div>
-          </div>
-
-          <button type="submit" className="save-btn">Save Changes</button>
-        </form>
-      </div>
+          </section>
+        </div>
+      )}
     </Modal>
   );
 };

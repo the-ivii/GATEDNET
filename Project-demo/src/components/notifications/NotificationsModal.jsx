@@ -1,63 +1,61 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Modal from '../common/Modal';
 import './NotificationsModal.css';
 
-// Mock data - replace with actual data fetching
-const mockNotifications = [
-  {
-    id: 1,
-    title: 'New Poll Available',
-    description: 'A new poll on "Community Garden Proposal" is now available for voting.',
-    date: '2023-11-10',
-    read: false
-  },
-  {
-    id: 2,
-    title: 'Payment Reminder',
-    description: 'Your maintenance payment for November is due in 5 days.',
-    date: '2023-11-08',
-    read: true
-  },
-  {
-    id: 3,
-    title: 'Amenity Booking Confirmed',
-    description: 'Your booking of the Community Hall for November 20th has been confirmed.',
-    date: '2023-11-05',
-    read: true
-  }
-];
+const API_BASE_URL = 'http://localhost:3000/api';
 
 const NotificationsModal = ({ isOpen, onClose }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulate fetching notifications
     const fetchNotifications = async () => {
+      if (!isOpen) return;
+      
       setLoading(true);
+      setError(null);
       try {
-        // Replace with actual API call
-        setTimeout(() => {
-          setNotifications(mockNotifications);
-          setLoading(false);
-        }, 500);
+        const response = await axios.get(`${API_BASE_URL}/notifications`);
+        setNotifications(response.data.data);
       } catch (error) {
         console.error('Error fetching notifications:', error);
+        setError('Failed to fetch notifications. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
-    if (isOpen) {
-      fetchNotifications();
-    }
+    fetchNotifications();
   }, [isOpen]);
 
-  const markAsRead = (id) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === id 
-        ? { ...notification, read: true } 
-        : notification
-    ));
+  const markAsRead = async (id) => {
+    try {
+      await axios.post(`${API_BASE_URL}/notifications/${id}/read`);
+      
+      // Update local state
+      setNotifications(notifications.map(notification => 
+        notification._id === id 
+          ? { ...notification, read: true } 
+          : notification
+      ));
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      setError('Failed to mark notification as read. Please try again.');
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      await axios.post(`${API_BASE_URL}/notifications/read-all`);
+      
+      // Update local state
+      setNotifications(notifications.map(notification => ({ ...notification, read: true })));
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+      setError('Failed to mark all notifications as read. Please try again.');
+    }
   };
 
   return (
@@ -69,6 +67,8 @@ const NotificationsModal = ({ isOpen, onClose }) => {
     >
       {loading ? (
         <div className="loading-spinner">Loading notifications...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
       ) : (
         <div className="notifications-list">
           {notifications.length === 0 ? (
@@ -80,7 +80,7 @@ const NotificationsModal = ({ isOpen, onClose }) => {
                 {notifications.some(n => !n.read) && (
                   <button 
                     className="mark-all-read"
-                    onClick={() => setNotifications(notifications.map(n => ({ ...n, read: true })))}
+                    onClick={markAllAsRead}
                   >
                     Mark all as read
                   </button>
@@ -89,14 +89,16 @@ const NotificationsModal = ({ isOpen, onClose }) => {
               
               {notifications.map(notification => (
                 <div 
-                  key={notification.id} 
+                  key={notification._id} 
                   className={`notification-item ${!notification.read ? 'unread' : ''}`}
-                  onClick={() => markAsRead(notification.id)}
+                  onClick={() => markAsRead(notification._id)}
                 >
                   <div className="notification-content">
                     <h3 className="notification-title">{notification.title}</h3>
-                    <p className="notification-description">{notification.description}</p>
-                    <span className="notification-date">{notification.date}</span>
+                    <p className="notification-description">{notification.message}</p>
+                    <span className="notification-date">
+                      {new Date(notification.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                   {!notification.read && <div className="unread-indicator"></div>}
                 </div>

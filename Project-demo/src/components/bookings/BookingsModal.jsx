@@ -1,73 +1,54 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Modal from '../common/Modal';
 import './BookingsModal.css';
 
-// Mock data - replace with actual data fetching
-const mockBookings = [
-  {
-    id: 1,
-    amenity: 'Community Hall',
-    date: '2023-11-20',
-    time: '6:00 PM - 9:00 PM',
-    status: 'confirmed',
-    bookedBy: 'John Doe'
-  },
-  {
-    id: 2,
-    amenity: 'Tennis Court',
-    date: '2023-11-15',
-    time: '4:00 PM - 6:00 PM',
-    status: 'pending',
-    bookedBy: 'John Doe'
-  },
-  {
-    id: 3,
-    amenity: 'Swimming Pool',
-    date: '2023-11-22',
-    time: '10:00 AM - 12:00 PM',
-    status: 'confirmed',
-    bookedBy: 'John Doe'
-  }
-];
+const API_BASE_URL = 'http://localhost:3000/api';
 
 const BookingsModal = ({ isOpen, onClose }) => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all'); // 'all', 'confirmed', 'pending'
 
   useEffect(() => {
-    // Simulate fetching bookings
     const fetchBookings = async () => {
+      if (!isOpen) return;
+      
       setLoading(true);
+      setError(null);
       try {
-        // Replace with actual API call
-        setTimeout(() => {
-          setBookings(mockBookings);
-          setLoading(false);
-        }, 500);
+        const response = await axios.get(`${API_BASE_URL}/amenities/bookings`);
+        setBookings(response.data.data);
       } catch (error) {
         console.error('Error fetching bookings:', error);
+        setError('Failed to fetch bookings. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
 
-    if (isOpen) {
-      fetchBookings();
-    }
+    fetchBookings();
   }, [isOpen]);
 
   const filteredBookings = filter === 'all' 
     ? bookings 
     : bookings.filter(booking => booking.status === filter);
 
-  const cancelBooking = (id) => {
-    // In a real app, would make API call to cancel booking
-    setBookings(bookings.map(booking => 
-      booking.id === id 
-        ? { ...booking, status: 'cancelled' } 
-        : booking
-    ));
-    console.log(`Cancelled booking ${id}`);
+  const cancelBooking = async (id) => {
+    try {
+      await axios.post(`${API_BASE_URL}/amenities/bookings/${id}/cancel`);
+      
+      // Update local state
+      setBookings(bookings.map(booking => 
+        booking._id === id 
+          ? { ...booking, status: 'cancelled' } 
+          : booking
+      ));
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+      setError('Failed to cancel booking. Please try again.');
+    }
   };
 
   return (
@@ -79,6 +60,8 @@ const BookingsModal = ({ isOpen, onClose }) => {
     >
       {loading ? (
         <div className="loading-spinner">Loading bookings...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
       ) : (
         <>
           <div className="bookings-filter">
@@ -107,9 +90,9 @@ const BookingsModal = ({ isOpen, onClose }) => {
               <div className="no-bookings">No bookings found</div>
             ) : (
               filteredBookings.map(booking => (
-                <div key={booking.id} className="booking-card">
+                <div key={booking._id} className="booking-card">
                   <div className="booking-header">
-                    <h3>{booking.amenity}</h3>
+                    <h3>{booking.amenityName}</h3>
                     <span className={`booking-status ${booking.status}`}>
                       {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
                     </span>
@@ -119,18 +102,20 @@ const BookingsModal = ({ isOpen, onClose }) => {
                     <div className="booking-info">
                       <div className="booking-date">
                         <span className="info-label">Date:</span>
-                        <span>{booking.date}</span>
+                        <span>{new Date(booking.date).toLocaleDateString()}</span>
                       </div>
-                      <div className="booking-time">
-                        <span className="info-label">Time:</span>
-                        <span>{booking.time}</span>
-                      </div>
+                      {booking.time && (
+                        <div className="booking-time">
+                          <span className="info-label">Time:</span>
+                          <span>{booking.time}</span>
+                        </div>
+                      )}
                     </div>
                     
                     {booking.status !== 'cancelled' && (
                       <button 
                         className="cancel-booking-btn"
-                        onClick={() => cancelBooking(booking.id)}
+                        onClick={() => cancelBooking(booking._id)}
                       >
                         Cancel
                       </button>
