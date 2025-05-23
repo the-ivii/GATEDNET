@@ -3,6 +3,7 @@ import { Shield } from 'lucide-react';
 import Button from '../components/UI/Button';
 import useStore from '../store/useStore';
 
+// Login page component for user authentication
 const Login = () => {
   const [email, setEmail] = useState('demo@example.com');
   const [password, setPassword] = useState('password');
