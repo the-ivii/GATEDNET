@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import useStore from './store/useStore';
 
+// Main application component
 function App() {
   const { isAuthenticated, fetchActivePolls, fetchMaintenanceUpdates, fetchNotifications } = useStore();
   
