@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import * as api from '../api/api';
 
+// Initialize store with default state and actions
 const useStore = create((set, get) => ({
   // Auth state
   user: JSON.parse(localStorage.getItem('user') || 'null'),
