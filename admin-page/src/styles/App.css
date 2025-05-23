@@ -1,0 +1,199 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #607ac2;
+}
+
+.app {
+  background-color: #e8edf5;
+  color: white;
+  min-height: 100vh;
+  transition: background-color 0.5s ease;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background-color: #031936;
+  font-weight: bold;
+  font-size: 22px;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.header:hover {
+  background-color: #05224d;
+}
+
+.header span,
+.header div {
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+.header span:hover,
+.header div:hover {
+  color: #4d94ff;
+  cursor: pointer;
+}
+
+.dashboard {
+  padding: 30px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-bottom: 30px;
+  justify-content: space-between;
+}
+
+.card {
+  background-color: #0b2c59;
+  padding: 20px;
+  border-radius: 20px;
+  flex: 1;
+  min-width: 240px;
+  color: white;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  animation: slideUp 0.5s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.poll-button {
+  background-color: #3a86ff;
+  border: none;
+  padding: 12px 18px;
+  color: white;
+  border-radius: 10px;
+  min-width: 150px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(58, 134, 255, 0.3);
+}
+
+.poll-button:hover {
+  background-color: #005ecb;
+  transform: scale(1.08);
+  box-shadow: 0 6px 12px rgba(58, 134, 255, 0.6);
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-left: 10px;
+  font-size: 0.85em;
+  color: black;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.status.open {
+  background-color: #ffe600;
+}
+
+.status.resolved {
+  background-color: #00c853;
+  color: white;
+}
+
+.status:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px rgba(0, 200, 83, 0.7);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.status.open {
+  background-color: #ffff00;
+  color: #000;
+}
+
+.status.resolved {
+  background-color: #00ff00;
+  color: #000;
+}
+.society-members-image {
+  width: 180px;      /* Try 200px if you want it even bigger */
+  height: auto;      /* Maintains aspect ratio */
+  display: block;
+  margin: 16px auto 24px auto; /* Top and bottom spacing, centered horizontally */
+}
+.society-image {
+  width: 180px; /* Adjust width as needed */
+  height: auto; /* Maintains aspect ratio */
+  display: block; /* Ensures proper alignment */
+  margin: 10px auto; /* Centers the image */
+}
+.announcement-image {
+  width: 180px;       /* Adjust width as needed */
+  height: auto;       /* Maintain aspect ratio */
+  display: block;
+  margin: 12px auto 20px auto;  /* Center image with vertical spacing */
+  border-radius: 8px; /* Optional: rounded corners */
+  object-fit: contain; /* Ensure image fits nicely */
+}
+.booked-amenities-image {
+  width: 150px;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+  object-fit: cover;
+}
+
+

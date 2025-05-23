@@ -1,0 +1,167 @@
+/* Container and Headings */
+.maintenance-container {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: #fdfdfd;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.maintenance-heading {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-align: center;
+  color: #2c3e50;
+}
+
+/* Form Styling */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px rgba(52, 152, 219, 0.4);
+  outline: none;
+}
+
+/* Button Styling */
+.btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+/* Table Styling */
+.maintenance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.maintenance-table th,
+.maintenance-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.maintenance-table th {
+  background-color: #f7f9fa;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.maintenance-table tr:hover {
+  background-color: #f0f8ff;
+  transition: background-color 0.3s ease;
+}
+
+.maintenance-table select {
+  padding: 8px 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Task List Styling */
+.task-list-item {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  border-left: 6px solid #3498db;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.task-list-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.task-status {
+  font-weight: 600;
+  color: #555;
+  margin-top: 8px;
+}
+
+/* Status Color Coding (Optional Enhancement) */
+.task-status::before {
+  content: '⬤ ';
+  font-size: 14px;
+}
+
+.task-status:contains("open")::before {
+  color: orange;
+}
+
+.task-status:contains("in-progress")::before {
+  color: royalblue;
+}
+
+.task-status:contains("resolved")::before {
+  color: green;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .maintenance-container {
+    padding: 20px;
+  }
+
+  .maintenance-heading {
+    font-size: 24px;
+  }
+
+  .form-control,
+  .btn {
+    font-size: 15px;
+  }
+
+  .maintenance-table th,
+  .maintenance-table td {
+    padding: 10px 12px;
+  }
+}

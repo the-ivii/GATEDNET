@@ -1,0 +1,202 @@
+/* .create-poll-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.create-poll-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.poll-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.poll-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline-color: #4e7cff;
+}
+
+.add-option-btn {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px dashed #999;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-option-btn:hover {
+  background-color: #e6e6e6;
+}
+
+.submit-btn {
+  background-color: #4e7cff;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #3b5fe0;
+} */
+
+.create-poll-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 30px 35px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+  border: 1px solid rgba(200, 200, 200, 0.25);
+  transition: all 0.3s ease;
+}
+
+.create-poll-container h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 26px;
+  color: #2c3e50;
+  letter-spacing: 0.5px;
+}
+
+.poll-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.poll-input {
+  padding: 12px 14px;
+  font-size: 16px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: all 0.2s ease-in-out;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.poll-input:focus {
+  border-color: #4e7cff;
+  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(78, 124, 255, 0.1);
+}
+
+.add-option-btn {
+  background-color: #edf0f5;
+  color: #333;
+  border: 1px dashed #a2a9b0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.add-option-btn:hover {
+  background-color: #dde1e7;
+}
+
+.submit-btn {
+  background-color: #4e7cff;
+  color: #fff;
+  padding: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 4px 10px rgba(78, 124, 255, 0.3);
+}
+
+.submit-btn:hover {
+  background-color: #3b5fe0;
+  transform: translateY(-1px);
+}
+.poll-input,
+.add-option-btn,
+.submit-btn {
+  transition: all 0.3s ease;
+}
+
+.poll-input.description {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.date-label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.poll-input.date {
+  cursor: pointer;
+}
+
+.options-container {
+  margin: 20px 0;
+}
+
+.options-container h4 {
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.option-row .poll-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.remove-option-btn {
+  margin-left: 10px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #ff5252;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.remove-option-btn:hover {
+  background-color: #ff1744;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
