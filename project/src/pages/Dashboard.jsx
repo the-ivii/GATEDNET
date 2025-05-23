@@ -13,6 +13,7 @@ import AllMaintenanceModal from '../components/Maintenance/AllMaintenanceModal';
 import AllNotificationsModal from '../components/Dashboard/AllNotificationsModal';
 import AllAnnouncementsModal from '../components/Dashboard/AllAnnouncementsModal';
 
+// Main dashboard component for displaying all features
 const Dashboard = () => {
   const [activePollId, setActivePollId] = useState(null);
   const [showAmenityModal, setShowAmenityModal] = useState(false);
