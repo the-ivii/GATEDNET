@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// This file contains all API calls and mock implementations for the application
+
 // In a real application, this would be set via environment variables
 const API_URL = 'https://api.example.com';
 
