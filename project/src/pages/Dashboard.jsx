@@ -35,6 +35,7 @@ const Dashboard = () => {
     setShowAmenityModal(true);
   };
   
+  // Handles sidebar navigation and opens corresponding modals
   const handleSidebarItemClick = (item) => {
     switch (item) {
       case 'settings':
