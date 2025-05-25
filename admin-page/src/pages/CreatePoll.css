@@ -57,146 +57,406 @@
   background-color: #3b5fe0;
 } */
 
+/* Top level admin panel styling */
 .create-poll-container {
-  max-width: 600px;
-  margin: 60px auto;
-  padding: 30px 35px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(6px);
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 35px 40px;
+  border-radius: 20px;
+  background: #0f172a;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-  border: 1px solid rgba(200, 200, 200, 0.25);
-  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  color: #ffffff;
 }
 
+/* Decorative top bar */
+.create-poll-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #6366f1, #818cf8, #6366f1);
+}
+
+/* Main heading */
 .create-poll-container h2 {
   text-align: center;
-  margin-bottom: 24px;
-  font-size: 26px;
-  color: #2c3e50;
+  margin-bottom: 35px;
+  font-size: 28px;
+  color: #ffffff;
   letter-spacing: 0.5px;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 15px;
 }
 
+.create-poll-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #3b82f6;
+  border-radius: 2px;
+}
+
+/* Form layout */
 .poll-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+  width: 100%;
 }
 
+/* Input fields - ensure white text */
 .poll-input {
-  padding: 12px 14px;
+  width: 100%;
+  max-width: 100%;
+  padding: 14px 16px;
   font-size: 16px;
-  border: 1px solid #dcdfe6;
-  border-radius: 8px;
-  background-color: #fafafa;
-  transition: all 0.2s ease-in-out;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  background-color: rgba(15, 23, 42, 0.95);
+  transition: all 0.3s ease;
+  color: #ffffff;
+  box-sizing: border-box;
 }
 
 .poll-input:focus {
-  border-color: #4e7cff;
-  background-color: #fff;
+  border-color: #3b82f6;
+  background-color: rgba(15, 23, 42, 0.98);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(78, 124, 255, 0.1);
-}
-
-.add-option-btn {
-  background-color: #edf0f5;
-  color: #333;
-  border: 1px dashed #a2a9b0;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.25s ease;
-}
-
-.add-option-btn:hover {
-  background-color: #dde1e7;
-}
-
-.submit-btn {
-  background-color: #4e7cff;
-  color: #fff;
-  padding: 14px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.1s ease;
-  box-shadow: 0 4px 10px rgba(78, 124, 255, 0.3);
-}
-
-.submit-btn:hover {
-  background-color: #3b5fe0;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   transform: translateY(-1px);
 }
-.poll-input,
-.add-option-btn,
-.submit-btn {
-  transition: all 0.3s ease;
+
+.poll-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.poll-input.description {
-  min-height: 100px;
-  resize: vertical;
-  font-family: inherit;
-}
-
+/* Date label */
 .date-label {
   display: block;
-  margin-top: 15px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
+  color: #ffffff;
+  font-size: 15px;
 }
 
-.poll-input.date {
-  cursor: pointer;
-}
-
-.options-container {
+/* Options and Settings containers */
+.options-container,
+.poll-settings {
+  background: #1e293b;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
   margin: 20px 0;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.options-container h4 {
-  margin-bottom: 10px;
-  color: #2c3e50;
+/* Container headings */
+.options-container h4,
+.poll-settings h4 {
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.options-container h4::after,
+.poll-settings h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: #60a5fa;
+  border-radius: 2px;
 }
 
 .option-row {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 12px;
+  margin-bottom: 12px;
+  width: 100%;
 }
 
+/* Radio labels in both containers */
+.options-container .radio-label,
+.poll-settings .radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.options-container .radio-label:hover,
+.poll-settings .radio-label:hover {
+  background: rgba(15, 23, 42, 0.98);
+  border-color: #3b82f6;
+}
+
+.options-container .radio-label input[type="radio"],
+.poll-settings .radio-label input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+  margin-right: 8px;
+}
+
+/* Option inputs in containers */
 .option-row .poll-input {
   flex: 1;
-  margin-bottom: 0;
+  background-color: rgba(15, 23, 42, 0.95);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
 }
 
-.remove-option-btn {
-  margin-left: 10px;
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: #ff5252;
-  color: white;
-  border-radius: 50%;
+.option-row .poll-input:focus {
+  background-color: rgba(15, 23, 42, 0.98);
+  border-color: #3b82f6;
+}
+
+.option-row .poll-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Add option button */
+.add-option-btn {
+  background: rgba(15, 23, 42, 0.95);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 14px;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  gap: 8px;
+}
+
+.add-option-btn:hover {
+  background: rgba(15, 23, 42, 0.98);
+  color: #60a5fa;
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+/* Remove option button */
+.remove-option-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
 }
 
 .remove-option-btn:hover {
-  background-color: #ff1744;
+  background: linear-gradient(135deg, #991b1b, #7f1d1d);
+  transform: rotate(90deg);
 }
 
-button:disabled {
-  background-color: #cccccc;
+/* Poll Settings container */
+.poll-settings {
+  background: linear-gradient(145deg, #1e2638, #2a3649);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  margin: 20px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-label {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+/* Submit button text */
+.submit-btn {
+  background: #2563eb;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+}
+
+.submit-btn:disabled {
+  background: rgba(30, 38, 56, 0.95);
   cursor: not-allowed;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.5);
+  transform: none;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.submit-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.poll-input,
+.add-option-btn,
+.submit-btn,
+.radio-label {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .create-poll-container {
+    margin: 20px;
+    padding: 25px;
+  }
+
+  .poll-input,
+  .add-option-btn,
+  .submit-btn {
+    padding: 12px;
+  }
+
+  .radio-label {
+    padding: 10px;
+  }
+
+  .options-container,
+  .poll-settings {
+    padding: 20px;
+  }
+}
+
+/* Date input styling to match dark theme */
+input[type="date"] {
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  width: 100%;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[type="date"]:focus {
+  background-color: rgba(15, 23, 42, 0.98);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  transform: translateY(-1px);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+  cursor: pointer;
+  padding: 4px;
+  margin-right: 4px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Radio group container */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.radio-label {
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-weight: 500;
+}
+
+/* Poll settings section padding */
+.poll-settings {
+  padding: 30px;
+}
+
+.poll-settings h4 {
+  margin-bottom: 24px;
+}
+
+/* How should users vote text */
+.settings-label {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  opacity: 0.9;
 }

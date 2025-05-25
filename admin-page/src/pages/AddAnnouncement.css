@@ -1,48 +1,103 @@
 .announcement-wrapper {
-  padding: 20px;
-  max-width: 500px;
-  margin: 40px auto;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background-color: #f9fafb;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  color: #333333; /* Dark gray text color */
-  box-sizing: border-box; /* Ensure padding is included in width calculation */
+  padding: 32px 28px;
+  max-width: 520px;
+  margin: 48px auto;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f9fafb 80%, #e0e7ff 100%);
+  box-shadow: 0 6px 32px 0 rgba(37, 99, 235, 0.08), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+  color: #22223b;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.announcement-wrapper::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, #2563eb33 0%, transparent 70%);
+  z-index: 0;
+}
+
+.announcement-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 18px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  z-index: 1;
+  position: relative;
 }
 
 .announcement-textarea {
   width: 100%;
-  padding: 14px 16px;
-  font-size: 16px;
-  font-family: inherit;
-  color: #333;
-  background-color: #fdfdfd;
-  border: 1px solid #2a60b1;
-  border-radius: 8px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 12px;
+  min-height: 120px;
+  padding: 16px 18px;
+  font-size: 1.08rem;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  color: #22223b;
+  background-color: #f8fafc;
+  border: 1.5px solid #2563eb;
+  border-radius: 10px;
+  box-shadow: 0 1.5px 6px 0 rgba(37, 99, 235, 0.06);
+  margin-bottom: 18px;
   resize: vertical;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-sizing: border-box; /* Include padding and border in element's total width/height */
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+  z-index: 1;
+  position: relative;
 }
 
 .announcement-textarea:focus {
   outline: none;
-  border-color: #3b82f6; /* Tailwind blue-500 */
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* soft blue ring */
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+  background-color: #fff;
 }
 
 .announce-btn {
-  background-color: #2563eb;
-  color: rgb(255, 247, 247);
-  padding: 10px 18px;
+  background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+  color: #fff;
+  padding: 12px 28px;
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.10);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  letter-spacing: 0.5px;
+  z-index: 1;
+  position: relative;
 }
 
-.announce-btn:hover {
-  background-color: #1d4ed8;
+.announce-btn:hover, .announce-btn:focus {
+  background: linear-gradient(90deg, #1d4ed8 60%, #1e293b 100%);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 16px 0 rgba(37, 99, 235, 0.16);
+}
+
+@media (max-width: 600px) {
+  .announcement-wrapper {
+    padding: 18px 6vw;
+    max-width: 98vw;
+    margin: 24px 1vw;
+    border-radius: 12px;
+  }
+  .announcement-title {
+    font-size: 1.3rem;
+  }
+  .announcement-textarea {
+    font-size: 1rem;
+    padding: 12px 10px;
+  }
+  .announce-btn {
+    font-size: 1rem;
+    padding: 10px 16px;
+  }
 }
