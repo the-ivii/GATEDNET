@@ -1,44 +1,58 @@
 .update-members-container {
-  padding: 20px;
+  padding: 40px;
+  max-width: 800px;
+  margin: 80px auto;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  background: #0F172A;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
 }
 
 .members-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .members-table th,
 .members-table td {
-  padding: 12px;
+  padding: 15px;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #404060;
 }
 
 .members-table th {
-  background-color: #f8f9fa;
+  background-color: #303045;
   font-weight: 600;
-  color: #495057;
+  color: #ffffff;
 }
 
 .members-table tr:hover {
-  background-color: #f1f3f5;
+  background-color: rgba(60, 60, 80, 0.5);
 }
 
 .edit-btn, .delete-btn, .save-btn, .cancel-btn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   margin-right: 8px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 .edit-btn {
-  background-color: #0d6efd;
+  background-color: #007bff;
   color: white;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
 }
 
 .delete-btn {
@@ -46,9 +60,19 @@
   color: white;
 }
 
+.delete-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
 .save-btn {
-  background-color: #198754;
+  background-color: #28a745;
   color: white;
+}
+
+.save-btn:hover {
+  background-color: #218838;
+  transform: translateY(-1px);
 }
 
 .cancel-btn {
@@ -56,21 +80,43 @@
   color: white;
 }
 
+.cancel-btn:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+.members-table td input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #505070;
+  border-radius: 8px;
+  background-color: #303045;
+  color: #e0e0e0;
+  font-size: 1rem;
+}
+
 .loading {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px;
-  font-size: 18px;
-  color: #6c757d;
+  height: 150px;
+  font-size: 1.2rem;
+  color: #a0a0a0;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .error-message {
-  padding: 12px;
+  padding: 15px;
   background-color: #f8d7da;
   color: #842029;
-  border-radius: 4px;
-  margin-bottom: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 input {
