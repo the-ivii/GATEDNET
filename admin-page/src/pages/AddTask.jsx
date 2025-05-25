@@ -1,40 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/Maintenance.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Use port 7000 for backend
+const BASE_URL = 'http://localhost:7000';
+
 const AddTask = () => {
   const navigate = useNavigate();
-  const [task, setTask] = useState({ title: '', description: '', status: 'open' });
+  const [task, setTask] = useState({ 
+    title: '', 
+    description: '', 
+    status: 'pending',
+    priority: 'medium'
+  });
+  const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('admin_id_token');
+    if (!token) {
+      toast.error('Please login to continue');
+      navigate('/admin/login');
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const existingTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const newTask = { id: Date.now(), ...task };
-    localStorage.setItem('tasks', JSON.stringify([...existingTasks, newTask]));
+    if (!isAuthenticated) {
+      toast.error('Please login to continue');
+      navigate('/admin/login');
+      return;
+    }
 
-    toast.success('✅ Task added successfully!', {
-      position: 'top-right',
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: 'colored',
-    });
+    setLoading(true);
+    
+    try {
+      const token = localStorage.getItem('admin_id_token');
+      console.log('Sending task data:', task);
+      
+      const response = await axios.post(`${BASE_URL}/api/tasks`, task, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.data) {
+        toast.success('✅ Task added successfully!', {
+          position: 'top-right',
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'colored',
+        });
 
-    // Reset form after adding task
-    setTask({ title: '', description: '', status: 'open' });
+        // Reset form after adding task
+        setTask({ 
+          title: '', 
+          description: '', 
+          status: 'pending',
+          priority: 'medium'
+        });
+        
+        // Navigate to view tasks page
+        navigate('/maintenance-updates/view-tasks');
+      }
+    } catch (error) {
+      console.error('Error adding task:', error);
+      
+      if (error.response?.status === 401) {
+        toast.error('Session expired. Please login again.');
+        localStorage.removeItem('admin_id_token');
+        navigate('/admin/login');
+      } else if (error.response?.status === 404) {
+        toast.error('Server not found. Please check if the backend is running.');
+      } else if (error.response?.data?.errors) {
+        // Handle validation errors
+        error.response.data.errors.forEach(err => {
+          toast.error(err);
+        });
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to add task. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (!isAuthenticated) {
+    return null; // Don't render the form if not authenticated
+  }
 
   return (
     <div className="maintenance-container">
-      <h2 className="maintenance-heading">Add New Maintenance Task</h2>
+      <h2 className="maintenance-heading">Add New Task</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Task Title</label>
@@ -67,18 +137,39 @@ const AddTask = () => {
             onChange={handleChange}
             className="form-control"
           >
-            <option value="open">Open</option>
+            <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
-            <option value="resolved">Resolved</option>
+            <option value="completed">Completed</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-primary mt-3">
-          Add Task
+        <div className="form-group">
+          <label>Priority</label>
+          <select
+            name="priority"
+            value={task.priority}
+            onChange={handleChange}
+            className="form-control"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <button 
+          type="submit" 
+          className="btn btn-primary mt-3"
+          disabled={loading}
+        >
+          {loading ? 'Adding Task...' : 'Add Task'}
         </button>
       </form>
 
       <div style={{ marginTop: '20px' }}>
-        <button className="btn btn-secondary" onClick={() => navigate('/maintenance-updates/view-tasks')}>
+        <button 
+          className="btn btn-secondary" 
+          onClick={() => navigate('/maintenance-updates/view-tasks')}
+          disabled={loading}
+        >
           Go to View Tasks
         </button>
       </div>
