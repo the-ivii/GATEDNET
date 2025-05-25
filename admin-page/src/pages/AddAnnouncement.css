@@ -1,34 +1,28 @@
 .announcement-wrapper {
-  padding: 32px 28px;
-  max-width: 520px;
-  margin: 48px auto;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #f9fafb 80%, #e0e7ff 100%);
-  box-shadow: 0 6px 32px 0 rgba(37, 99, 235, 0.08), 0 1.5px 6px 0 rgba(0,0,0,0.04);
-  color: #22223b;
+  padding: 40px;
+  max-width: 500px;
+  margin: 80px auto;
+  border: none;
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  background: #0F172A;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
 }
 
 .announcement-wrapper::before {
-  content: "";
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 160px;
-  height: 160px;
-  background: radial-gradient(circle, #2563eb33 0%, transparent 70%);
-  z-index: 0;
+  content: none;
 }
 
 .announcement-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 18px;
-  letter-spacing: 0.5px;
+  color: #e0e0e0;
+  margin-bottom: 30px;
+  letter-spacing: normal;
   text-align: center;
   z-index: 1;
   position: relative;
@@ -36,18 +30,18 @@
 
 .announcement-textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 16px 18px;
-  font-size: 1.08rem;
-  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  color: #22223b;
-  background-color: #f8fafc;
-  border: 1.5px solid #2563eb;
-  border-radius: 10px;
-  box-shadow: 0 1.5px 6px 0 rgba(37, 99, 235, 0.06);
-  margin-bottom: 18px;
+  min-height: 150px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  box-shadow: none;
+  margin-bottom: 20px;
   resize: vertical;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
   box-sizing: border-box;
   z-index: 1;
   position: relative;
@@ -55,49 +49,77 @@
 
 .announcement-textarea:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
-  background-color: #fff;
+  border-color: #007bff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+  background-color: #ffffff;
+}
+
+.announcement-wrapper input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  box-shadow: none;
+  margin-bottom: 20px;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+  box-sizing: border-box;
+}
+
+.announcement-wrapper input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+  background-color: #ffffff;
+}
+
+.announcement-wrapper input::placeholder,
+.announcement-wrapper textarea::placeholder {
+  color: #888888;
+  opacity: 1;
 }
 
 .announce-btn {
-  background: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: #fff;
-  padding: 12px 28px;
+  padding: 14px 28px;
   border: none;
-  border-radius: 8px;
-  font-size: 1.08rem;
+  border-radius: 12px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.10);
-  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-  letter-spacing: 0.5px;
+  box-shadow: 0 8px 16px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+  letter-spacing: normal;
   z-index: 1;
   position: relative;
 }
 
 .announce-btn:hover, .announce-btn:focus {
-  background: linear-gradient(90deg, #1d4ed8 60%, #1e293b 100%);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 4px 16px 0 rgba(37, 99, 235, 0.16);
+  background: linear-gradient(135deg, #0056b3, #003e80);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 123, 255, 0.4);
 }
 
 @media (max-width: 600px) {
   .announcement-wrapper {
-    padding: 18px 6vw;
-    max-width: 98vw;
-    margin: 24px 1vw;
-    border-radius: 12px;
+    padding: 20px;
+    max-width: 95%;
+    margin: 40px auto;
+    border-radius: 15px;
   }
   .announcement-title {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
   }
   .announcement-textarea {
-    font-size: 1rem;
-    padding: 12px 10px;
+    font-size: 0.9rem;
+    padding: 10px 12px;
   }
   .announce-btn {
-    font-size: 1rem;
-    padding: 10px 16px;
+    font-size: 0.9rem;
+    padding: 12px 20px;
   }
 }
