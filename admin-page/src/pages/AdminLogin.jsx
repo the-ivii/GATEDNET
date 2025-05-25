@@ -64,6 +64,11 @@ export default function AdminLogin() {
 
   return (
     <div className="auth-container">
+      <div className="auth-header">
+        {/* Icon goes here if you have one */}
+        <div className="auth-header-title">GREENLAND SOCIETY</div>
+        <div className="auth-header-subtitle">Resident Portal</div>
+      </div>
       <form onSubmit={handleSubmit} className="auth-form">
         <h2>Admin Login</h2>
         <div className="form-group">
