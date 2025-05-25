@@ -11,7 +11,7 @@ body {
   padding: 40px;
   border-radius: 20px;
   backdrop-filter: blur(20px);
-  background: #0F172A; /* Dark navy blue background */
+  background: #031936; /* Changed background to #031936 */
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
 }
@@ -39,21 +39,21 @@ form {
   border: 1px solid #505070;
   border-radius: 12px;
   font-size: 1rem;
-  background-color: #303045;
-  color: #e0e0e0;
+  background-color: #1A2E45;
+  color: #ffffff;
   font-weight: bold;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input::placeholder {
-  color: #e0e0e0;
+  color: #cccccc;
   opacity: 1;
 }
 
 input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 0 4px rgba(40, 80, 120, 0.2); /* Adjusted navy blue shadow with higher opacity */
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
 }
 
 button[type="submit"] {

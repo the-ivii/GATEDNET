@@ -3,7 +3,7 @@
   max-width: 500px;
   margin: 80px auto;
   padding: 40px;
-  background: #0F172A;
+  background: #031936;
   border: none;
   border-radius: 20px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
@@ -28,7 +28,7 @@
   border: 1px solid #505070;
   border-radius: 12px;
   font-size: 1rem;
-  background-color: #303045;
+  background-color: #1A2E45;
   color: #e0e0e0;
   transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   box-sizing: border-box;
@@ -44,7 +44,7 @@
 .add-reminder-form select:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
-  background-color: #383850;
+  background-color: #2A4058;
   outline: none;
 }
 
@@ -80,7 +80,7 @@ input[type="date"] {
   -webkit-appearance: none;
   -moz-appearance: none;
 
-  background-color: #303045;
+  background-color: #1A2E45;
   color: #e0e0e0;
   border: 1px solid #505070;
   border-radius: 12px;
@@ -105,7 +105,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"]:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
-  background-color: #383850;
+  background-color: #2A4058;
   outline: none;
 }
 

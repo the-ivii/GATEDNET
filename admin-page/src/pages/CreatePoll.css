@@ -3,7 +3,7 @@
   margin: 40px auto;
   padding: 35px 40px;
   border-radius: 20px;
-  background: #0f172a;
+  background: #031936;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
   position: relative;
@@ -63,7 +63,7 @@
   font-size: 16px;
   border: 1px solid rgba(59, 130, 246, 0.3);
   border-radius: 12px;
-  background-color: rgba(15, 23, 42, 0.95);
+  background-color: #1A2E45;
   transition: all 0.3s ease;
   color: #ffffff;
   box-sizing: border-box;
@@ -71,14 +71,14 @@
 
 .poll-input:focus {
   border-color: #3b82f6;
-  background-color: rgba(15, 23, 42, 0.98);
+  background-color: #2A4058;
   outline: none;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   transform: translateY(-1px);
 }
 
 .poll-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: #cccccc;
 }
 
 /* Date label */
@@ -337,7 +337,7 @@
 
 /* Date input styling to match dark theme */
 input[type="date"] {
-  background-color: rgba(15, 23, 42, 0.95);
+  background-color: #1A2E45;
   border: 1px solid rgba(59, 130, 246, 0.3);
   color: #ffffff;
   border-radius: 12px;
@@ -350,7 +350,7 @@ input[type="date"] {
 }
 
 input[type="date"]:focus {
-  background-color: rgba(15, 23, 42, 0.98);
+  background-color: #2A4058;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
   transform: translateY(-1px);
