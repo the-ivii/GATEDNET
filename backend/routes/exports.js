@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const User = require('../models/User');
 const Society = require('../models/Society');
 const Poll = require('../models/Poll');
@@ -31,7 +31,7 @@ const sanitizeData = (data) => {
 };
 
 // Export users
-router.get('/users', adminAuth, async (req, res) => {
+router.get('/users', [auth, admin], async (req, res) => {
   try {
     const users = await User.find({
       societyId: req.user.societyId
@@ -91,7 +91,7 @@ router.get('/users', adminAuth, async (req, res) => {
 });
 
 // Export maintenance requests
-router.get('/maintenance', adminAuth, async (req, res) => {
+router.get('/maintenance', [auth, admin], async (req, res) => {
   try {
     const { status, category, fromDate, toDate } = req.query;
     
@@ -178,7 +178,7 @@ router.get('/maintenance', adminAuth, async (req, res) => {
 });
 
 // Export polls and voting data
-router.get('/polls', adminAuth, async (req, res) => {
+router.get('/polls', [auth, admin], async (req, res) => {
   try {
     const { status, fromDate, toDate } = req.query;
     
@@ -308,7 +308,7 @@ router.get('/polls', adminAuth, async (req, res) => {
 });
 
 // Export amenity bookings
-router.get('/amenity-bookings', adminAuth, async (req, res) => {
+router.get('/amenity-bookings', [auth, admin], async (req, res) => {
   try {
     const { amenityId, status, fromDate, toDate } = req.query;
     
@@ -404,7 +404,7 @@ router.get('/amenity-bookings', adminAuth, async (req, res) => {
 });
 
 // Export disputes
-router.get('/disputes', adminAuth, async (req, res) => {
+router.get('/disputes', [auth, admin], async (req, res) => {
   try {
     const { status, emotion, fromDate, toDate } = req.query;
     
@@ -496,7 +496,7 @@ router.get('/disputes', adminAuth, async (req, res) => {
 });
 
 // Export events and attendance data
-router.get('/events', adminAuth, async (req, res) => {
+router.get('/events', [auth, admin], async (req, res) => {
   try {
     const { category, status, fromDate, toDate } = req.query;
     
@@ -640,7 +640,7 @@ router.get('/events', adminAuth, async (req, res) => {
 });
 
 // Export support tickets
-router.get('/support-tickets', adminAuth, async (req, res) => {
+router.get('/support-tickets', [auth, admin], async (req, res) => {
   try {
     const { status, category, fromDate, toDate } = req.query;
     

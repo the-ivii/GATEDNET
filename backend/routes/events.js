@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Event = require('../models/Event');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const { emitToSociety, emitToUser } = require('../socket');
 
 // Create a new event
-router.post('/', adminAuth, [
+router.post('/', [auth, admin], [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('description').trim().notEmpty().withMessage('Description is required'),
   body('startDate').isISO8601().withMessage('Valid start date is required'),
