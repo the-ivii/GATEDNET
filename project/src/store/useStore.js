@@ -21,6 +21,7 @@ const useStore = create((set, get) => ({
   error: null,
   
   // Actions
+  // Action: Handles user login and authentication
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
