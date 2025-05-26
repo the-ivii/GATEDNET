@@ -3,7 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Dispute = require('../models/Dispute');
 const User = require('../models/User');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const { emitToDispute, emitToUser, emitToSociety } = require('../socket');
 
 // Create a new dispute
@@ -62,7 +62,7 @@ router.post('/', auth, [
 });
 
 // Get all disputes for society (admin only)
-router.get('/all', adminAuth, async (req, res) => {
+router.get('/all', [auth, admin], async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
     
@@ -170,7 +170,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Update dispute status (admin only)
-router.put('/:id/status', adminAuth, [
+router.put('/:id/status', [auth, admin], [
   body('status').isIn(['pending', 'in-mediation', 'resolved', 'escalated']).withMessage('Valid status is required'),
   body('comment').optional().trim()
 ], async (req, res) => {
@@ -223,7 +223,7 @@ router.put('/:id/status', adminAuth, [
 });
 
 // Assign mediator to dispute (admin only)
-router.put('/:id/mediator', adminAuth, [
+router.put('/:id/mediator', [auth, admin], [
   body('mediatorId').notEmpty().withMessage('Mediator ID is required')
 ], async (req, res) => {
   try {
@@ -355,7 +355,7 @@ router.put('/:id/resolution', auth, [
 });
 
 // Update dispute privacy setting (admin only)
-router.put('/:id/privacy', adminAuth, [
+router.put('/:id/privacy', [auth, admin], [
   body('isPrivate').isBoolean().withMessage('isPrivate must be a boolean value')
 ], async (req, res) => {
   try {
@@ -384,7 +384,7 @@ router.put('/:id/privacy', adminAuth, [
 });
 
 // Get dispute statistics (admin only)
-router.get('/statistics/summary', adminAuth, async (req, res) => {
+router.get('/statistics/summary', [auth, admin], async (req, res) => {
   try {
     const society = req.user.societyId;
     

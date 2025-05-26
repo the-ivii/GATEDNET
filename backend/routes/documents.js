@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Document = require('../models/Document');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const { emitToDocument, emitToSociety } = require('../socket');
 
 // Create a new document
-router.post('/', adminAuth, [
+router.post('/', [auth, admin], [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('content').trim().notEmpty().withMessage('Content is required'),
   body('category').isIn(['rules', 'notices', 'minutes', 'financials', 'other']).withMessage('Valid category is required')
@@ -245,7 +245,7 @@ router.post('/:id/publish-draft', auth, async (req, res) => {
 });
 
 // Add allowed editor
-router.post('/:id/editors', adminAuth, [
+router.post('/:id/editors', [auth, admin], [
   body('userId').notEmpty().withMessage('User ID is required')
 ], async (req, res) => {
   try {
@@ -281,7 +281,7 @@ router.post('/:id/editors', adminAuth, [
 });
 
 // Remove allowed editor
-router.delete('/:id/editors/:userId', adminAuth, async (req, res) => {
+router.delete('/:id/editors/:userId', [auth, admin], async (req, res) => {
   try {
     const document = await Document.findOne({
       _id: req.params.id,
@@ -306,7 +306,7 @@ router.delete('/:id/editors/:userId', adminAuth, async (req, res) => {
 });
 
 // Delete document (admin only)
-router.delete('/:id', adminAuth, async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
   try {
     const document = await Document.findOne({
       _id: req.params.id,
