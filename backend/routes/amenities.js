@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const AmenityBooking = require('../models/AmenityBooking');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 
 // Book an amenity
 router.post('/book', auth, [
@@ -82,7 +82,7 @@ router.get('/my-bookings', auth, async (req, res) => {
 });
 
 // Get all bookings for society (admin only)
-router.get('/society-bookings', adminAuth, async (req, res) => {
+router.get('/society-bookings', [auth, admin], async (req, res) => {
   try {
     const { page = 1, limit = 10, status, amenityId } = req.query;
     const query = { societyId: req.user.societyId };
@@ -141,7 +141,7 @@ router.put('/bookings/:id/cancel', auth, async (req, res) => {
 });
 
 // Update booking status (admin only)
-router.put('/bookings/:id/status', adminAuth, [
+router.put('/bookings/:id/status', [auth, admin], [
   body('status').isIn(['pending', 'confirmed', 'cancelled', 'completed']).withMessage('Valid status is required')
 ], async (req, res) => {
   try {
