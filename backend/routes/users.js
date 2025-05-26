@@ -4,7 +4,7 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const Society = require('../models/Society');
 const Notification = require('../models/Notification');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const { isValidPhoneNumber } = require('../utils/helpers');
 
 // Get user profile
@@ -150,7 +150,7 @@ router.put('/notifications/:id/archive', auth, async (req, res) => {
 });
 
 // Admin: Get all users in society
-router.get('/society/users', adminAuth, async (req, res) => {
+router.get('/society/users', [auth, admin], async (req, res) => {
   try {
     const { page = 1, limit = 10, role } = req.query;
     const query = { societyId: req.user.societyId };
@@ -183,7 +183,7 @@ router.get('/society/users', adminAuth, async (req, res) => {
 });
 
 // Admin: Update user role
-router.put('/users/:id/role', adminAuth, [
+router.put('/users/:id/role', [auth, admin], [
   body('role').isIn(['resident', 'admin', 'security']).withMessage('Invalid role')
 ], async (req, res) => {
   try {

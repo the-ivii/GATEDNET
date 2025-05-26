@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const SupportTicket = require('../models/SupportTicket');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const { emitToUser } = require('../socket');
 
 // Create a new support ticket
@@ -90,7 +90,7 @@ router.get('/my', auth, async (req, res) => {
 });
 
 // Get all support tickets for society (admin only)
-router.get('/all', adminAuth, async (req, res) => {
+router.get('/all', [auth, admin], async (req, res) => {
   try {
     const { status, category, priority, page = 1, limit = 10 } = req.query;
     
@@ -225,7 +225,7 @@ router.post('/:id/response', auth, [
 });
 
 // Update support ticket status (admin only)
-router.put('/:id/status', adminAuth, [
+router.put('/:id/status', [auth, admin], [
   body('status').isIn(['open', 'in-progress', 'resolved', 'closed']).withMessage('Valid status is required'),
   body('responseText').optional().trim()
 ], async (req, res) => {
@@ -262,7 +262,7 @@ router.put('/:id/status', adminAuth, [
 });
 
 // Assign support ticket to staff (admin only)
-router.put('/:id/assign', adminAuth, [
+router.put('/:id/assign', [auth, admin], [
   body('staffId').notEmpty().withMessage('Staff ID is required')
 ], async (req, res) => {
   try {
@@ -363,7 +363,7 @@ router.post('/:id/rate', auth, [
 });
 
 // Get support ticket statistics (admin only)
-router.get('/statistics/summary', adminAuth, async (req, res) => {
+router.get('/statistics/summary', [auth, admin], async (req, res) => {
   try {
     const society = req.user.societyId;
     
