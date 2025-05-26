@@ -1,15 +1,28 @@
 const twilio = require('twilio');
 const SMSTemplate = require('../models/SMSTemplate');
 
-// Initialize Twilio client
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Initialize Twilio client only in production
+let client;
+if (process.env.NODE_ENV === 'production') {
+  client = twilio(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
+}
 
 // Send SMS using Twilio
 const sendSMS = async (to, message) => {
   try {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Development mode - SMS would be sent to:', to);
+      console.log('Message:', message);
+      return {
+        success: true,
+        messageId: 'dev-' + Date.now(),
+        status: 'sent'
+      };
+    }
+
     const response = await client.messages.create({
       body: message,
       to,
@@ -84,6 +97,14 @@ const sendBulkTemplatedSMS = async (recipients, templateId, variables = {}) => {
 // Verify phone number
 const verifyPhoneNumber = async (phoneNumber) => {
   try {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Development mode - Verification code would be sent to:', phoneNumber);
+      return {
+        success: true,
+        status: 'pending'
+      };
+    }
+
     const verification = await client.verify
       .services(process.env.TWILIO_VERIFY_SERVICE_SID)
       .verifications.create({ to: phoneNumber, channel: 'sms' });
@@ -101,6 +122,15 @@ const verifyPhoneNumber = async (phoneNumber) => {
 // Check verification code
 const checkVerificationCode = async (phoneNumber, code) => {
   try {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Development mode - Verifying code:', code, 'for:', phoneNumber);
+      return {
+        success: true,
+        status: 'approved',
+        valid: true
+      };
+    }
+
     const verification = await client.verify
       .services(process.env.TWILIO_VERIFY_SERVICE_SID)
       .verificationChecks.create({ to: phoneNumber, code });

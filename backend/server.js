@@ -16,6 +16,11 @@ if (!process.env.JWT_SECRET) {
   process.env.JWT_SECRET = 'your_jwt_secret_key_here';
 }
 
+// Hardcoded MongoDB URI for testing
+if (!process.env.MONGODB_URI) {
+  process.env.MONGODB_URI = 'mongodb+srv://aryansingh:aryanmongodb@cluster0.2zmnt.mongodb.net/gatednet';
+}
+
 // Debug environment variables
 console.log('Environment variables:');
 console.log('PORT:', process.env.PORT);
@@ -52,24 +57,38 @@ const connectDB = async () => {
     if (!process.env.MONGODB_URI) {
       throw new Error('MONGODB_URI is not defined in environment variables');
     }
+    
+    // Log the connection attempt
+    console.log('Attempting to connect to MongoDB...');
+    
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      family: 4,
+      maxPoolSize: 10, // Limit the connection pool size
+      minPoolSize: 5,  // Maintain minimum connections
+      maxIdleTimeMS: 60000, // Close idle connections after 60 seconds
+      connectTimeoutMS: 10000, // Connection timeout
       retryWrites: true,
       w: 'majority'
     });
+    
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error('MongoDB connection error details:', {
+      name: error.name,
+      message: error.message,
+      code: error.code,
+      codeName: error.codeName
+    });
+    
     // Retry connection after 5 seconds
+    console.log('Retrying connection in 5 seconds...');
     setTimeout(connectDB, 5000);
   }
 };
-
-// Hardcoded MongoDB URI for testing
-if (!process.env.MONGODB_URI) {
-  process.env.MONGODB_URI = 'mongodb+srv://pg9999:Pg9026228280@cluster0.2zmnt.mongodb.net/gatednet';
-}
 
 connectDB();
 
