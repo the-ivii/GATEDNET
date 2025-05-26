@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Society = require('../models/Society');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 const geolib = require('geolib');
 
 // Update society geofence (admin only)
-router.put('/society', adminAuth, [
+router.put('/society', [auth, admin], [
   body('center').isObject().withMessage('Center coordinates are required'),
   body('center.latitude').isFloat({ min: -90, max: 90 }).withMessage('Valid latitude is required'),
   body('center.longitude').isFloat({ min: -180, max: 180 }).withMessage('Valid longitude is required'),

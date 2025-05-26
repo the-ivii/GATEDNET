@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Maintenance = require('../models/Maintenance');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
 
 // Create maintenance request
 router.post('/', auth, [
@@ -86,7 +86,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Update maintenance request status (admin only)
-router.put('/:id/status', adminAuth, [
+router.put('/:id/status', [auth, admin], [
   body('status').isIn(['pending', 'in-progress', 'completed', 'cancelled']).withMessage('Valid status is required')
 ], async (req, res) => {
   try {
