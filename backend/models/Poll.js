@@ -1,17 +1,5 @@
 const mongoose = require('mongoose');
 
-const optionSchema = new mongoose.Schema({
-  text: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  votes: {
-    type: Number,
-    default: 0
-  }
-});
-
 const pollSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -23,8 +11,24 @@ const pollSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  options: [optionSchema],
-  societyId: {
+  options: [{
+    text: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    votes: [{
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      votedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }]
+  }],
+  society: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
     required: true
@@ -34,36 +38,72 @@ const pollSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  startDate: {
+    type: Date,
+    required: true
+  },
   endDate: {
     type: Date,
     required: true
   },
-  status: {
-    type: String,
-    enum: ['active', 'closed'],
-    default: 'active'
+  isActive: {
+    type: Boolean,
+    default: true
   },
-  voters: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }]
+  isPublic: {
+    type: Boolean,
+    default: true
+  },
+  allowMultipleVotes: {
+    type: Boolean,
+    default: false
+  },
+  showResults: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 }, {
   timestamps: true
 });
 
-// Method to check if poll is expired
-pollSchema.methods.isExpired = function() {
-  return new Date() > this.endDate;
+// Add indexes for faster queries
+pollSchema.index({ society: 1, createdAt: -1 });
+pollSchema.index({ endDate: 1 }, { expireAfterSeconds: 0 });
+
+// Method to get public profile
+pollSchema.methods.getPublicProfile = function() {
+  const poll = this.toObject();
+  delete poll.__v;
+  return poll;
 };
 
-// Method to get results
-pollSchema.methods.getResults = function() {
-  const total = this.options.reduce((sum, option) => sum + option.votes, 0);
-  return this.options.map(option => ({
-    text: option.text,
-    votes: option.votes,
-    percentage: total > 0 ? (option.votes / total * 100).toFixed(2) : 0
-  }));
+// Method to check if poll is active
+pollSchema.methods.isCurrentlyActive = function() {
+  const now = new Date();
+  return this.startDate <= now && now <= this.endDate && this.isActive;
 };
 
-module.exports = mongoose.model('Poll', pollSchema); 
+// Method to check if user has voted
+pollSchema.methods.hasUserVoted = function(userId) {
+  return this.options.some(option => 
+    option.votes.some(vote => vote.user.toString() === userId.toString())
+  );
+};
+
+// Method to get vote count for an option
+pollSchema.methods.getVoteCount = function(optionIndex) {
+  return this.options[optionIndex].votes.length;
+};
+
+// Method to get total votes
+pollSchema.methods.getTotalVotes = function() {
+  return this.options.reduce((total, option) => total + option.votes.length, 0);
+};
+
+const Poll = mongoose.model('Poll', pollSchema);
+
+module.exports = Poll;

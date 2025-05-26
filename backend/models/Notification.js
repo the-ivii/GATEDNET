@@ -13,69 +13,62 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['announcement', 'maintenance', 'event', 'alert'],
-    required: true
+    required: true,
+    enum: ['announcement', 'maintenance', 'poll', 'event', 'payment', 'general']
   },
-  societyId: {
+  priority: {
+    type: String,
+    required: true,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
+  },
+  society: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Society',
     required: true
   },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
   recipients: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  status: {
-    type: String,
-    enum: ['unread', 'read', 'archived'],
-    default: 'unread'
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
-  },
-  expiresAt: {
-    type: Date
-  },
-  link: {
-    type: String,
-    trim: true
-  },
-  readBy: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
-    readAt: {
-      type: Date,
-      default: Date.now
-    }
-  }]
+    isRead: {
+      type: Boolean,
+      default: false
+    },
+    readAt: Date
+  }],
+  relatedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    refPath: 'onModel'
+  },
+  onModel: {
+    type: String,
+    enum: ['Poll', 'Maintenance', 'Event', 'Payment']
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 }, {
   timestamps: true
 });
 
-// Method to mark notification as read
-notificationSchema.methods.markAsRead = async function() {
-  this.status = 'read';
-  return this.save();
+// Add indexes for faster queries
+notificationSchema.index({ society: 1, createdAt: -1 });
+notificationSchema.index({ 'recipients.user': 1, createdAt: -1 });
+
+// Method to get public profile
+notificationSchema.methods.getPublicProfile = function() {
+  const notification = this.toObject();
+  delete notification.__v;
+  return notification;
 };
 
-// Method to archive notification
-notificationSchema.methods.archive = async function() {
-  this.status = 'archived';
-  return this.save();
-};
+const Notification = mongoose.model('Notification', notificationSchema);
 
-// Method to check if notification is expired
-notificationSchema.methods.isExpired = function() {
-  return this.expiresAt && new Date() > this.expiresAt;
-};
-
-module.exports = mongoose.model('Notification', notificationSchema); 
+module.exports = Notification;
