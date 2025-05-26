@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use environment variable or fallback to localhost if not defined
- const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:7000';
 //const BASE_URL = 'http://localhost:5000'; // Force port 5000 explicitly
 
 // Helper to handle API errors

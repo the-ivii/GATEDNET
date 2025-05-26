@@ -11,8 +11,8 @@ body {
   padding: 40px;
   border-radius: 20px;
   backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  background: #031936; /* Changed background to #031936 */
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
 }
 
@@ -25,7 +25,7 @@ body {
   margin-bottom: 30px;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #102a43;
+  color: #e0e0e0;
 }
 
 form {
@@ -34,18 +34,26 @@ form {
   gap: 18px;
 }
 
-input {
+.add-member-container form input {
   padding: 14px 16px;
-  border: 1px solid #d1d9e6;
+  border: 1px solid #505070;
   border-radius: 12px;
   font-size: 1rem;
+  background-color: #1A2E45;
+  color: #ffffff;
+  font-weight: bold;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input::placeholder {
+  color: #cccccc;
+  opacity: 1;
 }
 
 input:focus {
   border-color: #007bff;
   outline: none;
-  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
 }
 
 button[type="submit"] {

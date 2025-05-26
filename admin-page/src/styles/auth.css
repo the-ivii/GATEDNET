@@ -1,63 +1,103 @@
 .auth-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #f0f2f5;
+}
+
+.auth-header {
+  background-color: #031936;
+  color: #ffffff;
+  padding: 30px 20px;
+  text-align: center;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.auth-header-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.auth-header-subtitle {
+  font-size: 16px;
+  color: #cccccc;
 }
 
 .auth-form {
-  background-color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   padding: 30px;
+  padding-top: 20px;
   width: 100%;
   max-width: 400px;
+  overflow: hidden;
+  color: #000000;
 }
 
 .auth-form h2 {
   text-align: center;
-  margin-bottom: 24px;
-  color: #0d6efd;
-  font-weight: 600;
+  margin-bottom: 30px;
+  color: #007bff;
+  font-weight: 700;
+  font-size: 28px;
 }
 
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .form-control {
   width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
+  padding: 14px 16px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
   font-size: 16px;
-  transition: border-color 0.2s;
+  color: #000000;
+  background-color: #E8F0FE;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control::placeholder {
+  color: #000000; /* Black placeholder text */
 }
 
 .form-control:focus {
-  border-color: #0d6efd;
+  border-color: #007bff;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
 
 .btn {
   width: 100%;
-  padding: 10px;
+  padding: 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: all 0.3s ease;
 }
 
 .btn-primary {
-  background-color: #0d6efd;
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #0b5ed7;
+  background: linear-gradient(135deg, #0056b3, #003e80);
+  box-shadow: 0 6px 12px rgba(0, 86, 179, 0.3);
+  transform: translateY(-2px);
 }
 
 .btn:disabled {

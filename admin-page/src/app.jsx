@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Layout } from 'antd';
 import Header from './components/Header';
+import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
 
 // Admin Authentication
@@ -34,6 +36,9 @@ import MaintenanceUpdates from './pages/MaintenanceUpdates'; // main page with b
 import AddTask from './pages/AddTask';
 import UpdateTask from './pages/UpdateTask';
 import ViewTasks from './pages/ViewTasks';
+
+// 📋 Task Management
+import Tasks from './pages/Tasks';
 
 // Seed demo data for Bookings and Tasks if not present
 const seedDemoData = () => {
@@ -92,6 +97,8 @@ const RequireAuth = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/admin/login" />;
 };
 
+const { Content, Sider } = Layout;
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -103,111 +110,127 @@ const App = () => {
 
   return (
     <Router>
-      <div className="app">
-        {/* Show Header only when authenticated */}
+      <Layout style={{ minHeight: '100vh' }}>
         {isAuthenticated && <Header />}
+        <Layout>
+          {isAuthenticated && (
+            <Sider width={200} theme="dark">
+              <Navigation />
+            </Sider>
+          )}
+          <Layout style={{ padding: '24px' }}>
+            <Content>
+              <Routes>
+                {/* Auth Routes */}
+                <Route path="/" element={<Navigate to="/admin/login" />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/signup" element={<AdminSignup />} />
 
-        <Routes>
-          {/* Auth Routes */}
-          <Route path="/" element={<Navigate to="/admin/login" />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/signup" element={<AdminSignup />} />
+                {/* Protected Routes */}
+                <Route path="/dashboard" element={
+                  <RequireAuth>
+                    <Dashboard />
+                  </RequireAuth>
+                } />
 
-          {/* Protected Routes */}
-          <Route path="/dashboard" element={
-            <RequireAuth>
-              <Dashboard />
-            </RequireAuth>
-          } />
+                {/* 👥 Member Management */}
+                <Route path="/add-member" element={
+                  <RequireAuth>
+                    <AddMember />
+                  </RequireAuth>
+                } />
+                <Route path="/update-members" element={
+                  <RequireAuth>
+                    <UpdateMembers />
+                  </RequireAuth>
+                } />
+                <Route path="/download-excel" element={
+                  <RequireAuth>
+                    <DownloadExcel />
+                  </RequireAuth>
+                } />
 
-          {/* 👥 Member Management */}
-          <Route path="/add-member" element={
-            <RequireAuth>
-              <AddMember />
-            </RequireAuth>
-          } />
-          <Route path="/update-members" element={
-            <RequireAuth>
-              <UpdateMembers />
-            </RequireAuth>
-          } />
-          <Route path="/download-excel" element={
-            <RequireAuth>
-              <DownloadExcel />
-            </RequireAuth>
-          } />
+                {/* 📢 Announcements */}
+                <Route path="/announcements" element={
+                  <RequireAuth>
+                    <ViewAnnouncements />
+                  </RequireAuth>
+                } />
+                <Route path="/add-announcement" element={
+                  <RequireAuth>
+                    <AddAnnouncement />
+                  </RequireAuth>
+                } />
 
-          {/* 📢 Announcements */}
-          <Route path="/announcements" element={
-            <RequireAuth>
-              <ViewAnnouncements />
-            </RequireAuth>
-          } />
-          <Route path="/add-announcement" element={
-            <RequireAuth>
-              <AddAnnouncement />
-            </RequireAuth>
-          } />
+                {/* 🗳️ Polls */}
+                <Route path="/create-poll" element={
+                  <RequireAuth>
+                    <CreatePoll />
+                  </RequireAuth>
+                } />
+                <Route path="/poll-results" element={
+                  <RequireAuth>
+                    <PollResults />
+                  </RequireAuth>
+                } />
 
-          {/* 🗳️ Polls */}
-          <Route path="/create-poll" element={
-            <RequireAuth>
-              <CreatePoll />
-            </RequireAuth>
-          } />
-          <Route path="/poll-results" element={
-            <RequireAuth>
-              <PollResults />
-            </RequireAuth>
-          } />
+                {/* 🏠 Amenities */}
+                <Route path="/booked-amenities" element={
+                  <RequireAuth>
+                    <BookedAmenities />
+                  </RequireAuth>
+                } />
+                <Route path="/view-booked-amenities" element={
+                  <RequireAuth>
+                    <ViewBookedAmenities />
+                  </RequireAuth>
+                } />
 
-          {/* 🏠 Amenities */}
-          <Route path="/booked-amenities" element={
-            <RequireAuth>
-              <BookedAmenities />
-            </RequireAuth>
-          } />
-          <Route path="/view-booked-amenities" element={
-            <RequireAuth>
-              <ViewBookedAmenities />
-            </RequireAuth>
-          } />
+                {/* 🔔 Reminders */}
+                <Route path="/reminders" element={
+                  <RequireAuth>
+                    <Reminder />
+                  </RequireAuth>
+                } />
+                <Route path="/add-reminder" element={
+                  <RequireAuth>
+                    <AddReminder />
+                  </RequireAuth>
+                } />
 
-          {/* 🔔 Reminders */}
-          <Route path="/reminders" element={
-            <RequireAuth>
-              <Reminder />
-            </RequireAuth>
-          } />
-          <Route path="/add-reminder" element={
-            <RequireAuth>
-              <AddReminder />
-            </RequireAuth>
-          } />
+                {/* 🛠️ Maintenance Updates */}
+                <Route path="/maintenance-updates" element={
+                  <RequireAuth>
+                    <MaintenanceUpdates />
+                  </RequireAuth>
+                } />
+                <Route path="/maintenance-updates/add-task" element={
+                  <RequireAuth>
+                    <AddTask />
+                  </RequireAuth>
+                } />
+                <Route path="/maintenance-updates/update-task" element={
+                  <RequireAuth>
+                    <UpdateTask />
+                  </RequireAuth>
+                } />
+                <Route path="/maintenance-updates/view-tasks" element={
+                  <RequireAuth>
+                    <ViewTasks />
+                  </RequireAuth>
+                } />
 
-          {/* 🛠️ Maintenance Updates */}
-          <Route path="/maintenance-updates" element={
-            <RequireAuth>
-              <MaintenanceUpdates />
-            </RequireAuth>
-          } />
-          <Route path="/maintenance-updates/add-task" element={
-            <RequireAuth>
-              <AddTask />
-            </RequireAuth>
-          } />
-          <Route path="/maintenance-updates/update-task" element={
-            <RequireAuth>
-              <UpdateTask />
-            </RequireAuth>
-          } />
-          <Route path="/maintenance-updates/view-tasks" element={
-            <RequireAuth>
-              <ViewTasks />
-            </RequireAuth>
-          } />
-        </Routes>
-      </div>
+                {/* 📋 Task Management */}
+                <Route path="/tasks" element={
+                  <RequireAuth>
+                    <Tasks />
+                  </RequireAuth>
+                } />
+              </Routes>
+            </Content>
+          </Layout>
+        </Layout>
+      </Layout>
     </Router>
   );
 };

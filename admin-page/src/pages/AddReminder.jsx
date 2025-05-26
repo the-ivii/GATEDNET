@@ -10,7 +10,6 @@ const AddReminder = () => {
     title: '',
     description: '',
     dueDate: '',
-    priority: 'Medium'
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +40,7 @@ const AddReminder = () => {
 
         // For backward compatibility with localStorage
         const existingReminders = JSON.parse(localStorage.getItem('reminders')) || [];
-        localStorage.setItem('reminders', JSON.stringify([...existingReminders, formData]));
+        localStorage.setItem('reminders', JSON.stringify([...existingReminders, { title: formData.title, description: formData.description, dueDate: formData.dueDate }]));
 
         // Redirect after toast shows
         setTimeout(() => {
@@ -84,16 +83,6 @@ const AddReminder = () => {
           required
           disabled={isLoading}
         />
-        <select 
-          name="priority" 
-          value={formData.priority} 
-          onChange={handleChange}
-          disabled={isLoading}
-        >
-          <option value="High">🔴 High</option>
-          <option value="Medium">🟡 Medium</option>
-          <option value="Low">🟢 Low</option>
-        </select>
         <button 
           type="submit"
           disabled={isLoading}
