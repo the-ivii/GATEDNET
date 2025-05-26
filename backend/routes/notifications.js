@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Notification = require('../models/Notification');
-const { auth, adminAuth } = require('../middleware/auth');
+const { auth, admin } = require('../middleware/auth');
+const User = require('../models/User');
 
 // Create notification (admin only)
-router.post('/', adminAuth, [
+router.post('/', [auth, admin], [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('message').trim().notEmpty().withMessage('Message is required'),
   body('type').isIn(['announcement', 'maintenance', 'event', 'alert']).withMessage('Valid type is required'),
@@ -34,35 +35,16 @@ router.post('/', adminAuth, [
 // Get user's notifications
 router.get('/', auth, async (req, res) => {
   try {
-    const { page = 1, limit = 10, status } = req.query;
-    const query = { 
-      $or: [
-        { recipients: req.user._id },
-        { recipients: { $size: 0 } } // Broadcast notifications
-      ]
-    };
-    
-    if (status) {
-      query.status = status;
-    }
+    const notifications = await Notification.find({
+      'recipients.user': req.user._id,
+      isActive: true
+    })
+    .sort({ createdAt: -1 })
+    .populate('society', 'name')
+    .populate('relatedTo')
+    .limit(50);
 
-    const notifications = await Notification.find(query)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit))
-      .populate('createdBy', 'name');
-
-    const total = await Notification.countDocuments(query);
-
-    res.json({
-      notifications,
-      pagination: {
-        currentPage: parseInt(page),
-        totalPages: Math.ceil(total / limit),
-        totalItems: total,
-        itemsPerPage: parseInt(limit)
-      }
-    });
+    res.json(notifications.map(n => n.getPublicProfile()));
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -70,19 +52,28 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Mark notification as read
-router.put('/:id/read', auth, async (req, res) => {
+router.patch('/:id/read', auth, async (req, res) => {
   try {
     const notification = await Notification.findOne({
       _id: req.params.id,
-      recipients: req.user._id
+      'recipients.user': req.user._id
     });
 
     if (!notification) {
       return res.status(404).json({ message: 'Notification not found' });
     }
 
-    await notification.markAsRead();
-    res.json(notification);
+    const recipient = notification.recipients.find(
+      r => r.user.toString() === req.user._id.toString()
+    );
+
+    if (recipient) {
+      recipient.isRead = true;
+      recipient.readAt = new Date();
+      await notification.save();
+    }
+
+    res.json(notification.getPublicProfile());
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -110,7 +101,7 @@ router.put('/:id/archive', auth, async (req, res) => {
 });
 
 // Delete notification (admin only)
-router.delete('/:id', adminAuth, async (req, res) => {
+router.delete('/:id', [auth, admin], async (req, res) => {
   try {
     const notification = await Notification.findOne({
       _id: req.params.id,
@@ -121,12 +112,14 @@ router.delete('/:id', adminAuth, async (req, res) => {
       return res.status(404).json({ message: 'Notification not found' });
     }
 
-    await notification.remove();
-    res.json({ message: 'Notification deleted' });
+    notification.isActive = false;
+    await notification.save();
+
+    res.json({ message: 'Notification deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-module.exports = router; 
+module.exports = router;

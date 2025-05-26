@@ -1,15 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const admin = require('firebase-admin');
 const { auth } = require('../../middleware/auth');
 const User = require('../../models/User');
 
-// Initialize Firebase Admin
-const serviceAccount = require('../../config/firebase-service-account.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// Initialize Firebase Admin only in production
+let admin;
+if (process.env.NODE_ENV === 'production') {
+  admin = require('firebase-admin');
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+    })
+  });
+}
 
 // Register FCM token
 router.post('/register-token', auth, [
@@ -71,6 +77,14 @@ router.post('/send', auth, [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      return res.json({
+        message: 'Push notifications are disabled in development mode',
+        successCount: 0,
+        failureCount: 0
+      });
     }
 
     const { title, body, data, recipients } = req.body;
