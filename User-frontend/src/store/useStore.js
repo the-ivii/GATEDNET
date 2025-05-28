@@ -26,7 +26,8 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const res = await api.login(name, flat);
-      const member = res.data.member; // Access member from res.data
+      console.log('Login response:', res);
+      const member = res.member;
       set({
         user: member,
         isAuthenticated: true,
@@ -35,6 +36,7 @@ const useStore = create((set, get) => ({
       localStorage.setItem('user', JSON.stringify(member));
       localStorage.setItem('token', 'mock-token'); // Optionally set a token if you implement JWT
     } catch (error) {
+      console.error('Login error:', error.response?.data?.message || error.message || error);
       set({
         error: error.response?.data?.message || error.message || 'Invalid credentials',
         isLoading: false,
