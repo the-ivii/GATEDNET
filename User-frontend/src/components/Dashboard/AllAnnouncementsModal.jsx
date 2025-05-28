@@ -17,16 +17,16 @@ const AllAnnouncementsModal = ({ isOpen, onClose }) => {
             <span>No New Announcements</span>
           </div>
         ) : (
-          announcements.map(announcement => (
+          announcements.map((announcement, index) => (
             <div 
-              key={announcement.id}
+              key={`${announcement.id || index}-${index}`}
               className="bg-white p-4 rounded-lg shadow border border-gray-200"
             >
               <h3 className="text-lg font-medium text-navy-900">
                 {announcement.title}
               </h3>
               <p className="mt-2 text-gray-600">
-                {announcement.description}
+                {announcement.message}
               </p>
               <div className="mt-2 text-sm text-gray-500">
                 {new Date(announcement.createdAt).toLocaleDateString()}
