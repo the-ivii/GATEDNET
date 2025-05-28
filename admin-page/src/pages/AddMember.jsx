@@ -4,9 +4,9 @@ import './AddMember.css';
 
 const AddMember = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    email: '',
     flat: '',
-    contact: '',
+    name: '',
   });
 
   const [successMessage, setSuccessMessage] = useState('');
@@ -30,14 +30,14 @@ const AddMember = () => {
         setErrorMessage(result.error);
       } else {
         setSuccessMessage('✅ Member added successfully!');
-        setFormData({ name: '', flat: '', contact: '' });
+        setFormData({ email: '', flat: '', name: '' });
 
         // For backward compatibility with localStorage version
         const existingData = JSON.parse(localStorage.getItem('membersExcel')) || [];
         const newMember = {
-          Name: formData.name,
+          Email: formData.email,
           Flat: formData.flat,
-          Contact: formData.contact,
+          Name: formData.name,
         };
         const updatedData = [...existingData, newMember];
         localStorage.setItem('membersExcel', JSON.stringify(updatedData));
@@ -70,10 +70,11 @@ const AddMember = () => {
 
       <form onSubmit={handleSubmit}>
         <input 
-          name="name" 
-          value={formData.name} 
+          name="email" 
+          type="email"
+          value={formData.email} 
           onChange={handleChange} 
-          placeholder="Name" 
+          placeholder="Email Address" 
           required 
           disabled={isLoading}
         />
@@ -88,10 +89,10 @@ const AddMember = () => {
         />
 
         <input 
-          name="contact" 
-          value={formData.contact} 
+          name="name" 
+          value={formData.name} 
           onChange={handleChange} 
-          placeholder="Contact Number" 
+          placeholder="Name" 
           required 
           disabled={isLoading}
         />

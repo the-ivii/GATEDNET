@@ -22,10 +22,10 @@ const useStore = create((set, get) => ({
   
   // Actions
   // Action: Handles user login and authentication
-  login: async (name, flat) => {
+  login: async (email, flat) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await api.login(name, flat);
+      const res = await api.login(email, flat);
       console.log('Login response:', res);
       const member = res.member;
       set({

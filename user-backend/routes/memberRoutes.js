@@ -98,8 +98,8 @@ router.post('/vote', async (req, res) => {
 
 // Login route
 router.post('/login', async (req, res) => {
-  const { name, flat } = req.body;
-  const member = await Member.findOne({ name, flat });
+  const { email, flat } = req.body;
+  const member = await Member.findOne({ email, flat });
   if (!member) return res.status(401).json({ message: 'Invalid credentials' });
   res.json({ message: 'Login successful', member });
 });
