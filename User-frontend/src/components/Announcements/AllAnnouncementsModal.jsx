@@ -15,31 +15,36 @@ const AllAnnouncementsModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+      <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
         >
-          <X size={24} />
+          <X size={32} />
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-center">All Announcements</h2>
+        <h2 className="text-3xl font-extrabold text-white text-center mb-10 tracking-wide w-full">All Announcements</h2>
 
         {isLoading ? (
-          <div className="text-center py-4">Loading announcements...</div>
+          <div className="text-center py-4 text-white">Loading announcements...</div>
         ) : error ? (
-          <div className="text-center py-4 text-red-500">Error loading announcements: {error}</div>
+          <div className="text-center py-4 text-red-400">Error loading announcements: {error}</div>
         ) : announcements.length === 0 ? (
-          <div className="text-center py-4">No announcements available.</div>
+          <div className="text-center py-4 text-white">No announcements available.</div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {announcements.map(announcement => (
               <div 
-                key={announcement.id} // Assuming announcements have an id
-                className="p-3 rounded-lg border border-gray-200"
+                key={announcement.id}
+                className="bg-navy-800 rounded-2xl p-6 flex flex-col gap-2 shadow border border-navy-700"
               >
-                <h3 className="text-lg font-semibold">{announcement.title}</h3> {/* Assuming title field */}
-                <p className="text-gray-700">{announcement.message}</p> {/* Assuming message field */}
-                <p className="text-sm text-gray-500">Date: {new Date(announcement.date).toLocaleDateString()}</p> {/* Assuming date field */}
+                <div className="flex items-start">
+                  <div className="w-4 h-4 mt-2 mr-4 rounded-full bg-blue-400 flex-shrink-0 shadow-lg" />
+                  <div>
+                    <h3 className="text-lg font-bold text-white mb-1">{announcement.title}</h3>
+                    <p className="text-blue-200 mb-1">{announcement.message}</p>
+                    <p className="text-xs text-blue-300 mb-2">Date: {new Date(announcement.date).toLocaleDateString()}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

@@ -14,10 +14,10 @@ const Notifications = () => {
   const renderNotificationsList = (notifs) => (
     <div className="space-y-4">
       {notifs.map(notification => (
-        <div key={notification._id || notification.id} className="flex items-start">
-          <div className="w-6 h-6 mt-1 mr-3 rounded-full bg-blue-400 flex-shrink-0"></div>
+        <div key={notification._id || notification.id} className="flex items-start bg-navy-800 rounded-2xl px-6 py-4 shadow border border-navy-700">
+          <div className="w-4 h-4 mt-2 mr-4 rounded-full bg-blue-400 flex-shrink-0 shadow-lg"></div>
           <div>
-            <div className="text-lg">{notification.title}</div>
+            <div className="text-lg font-bold text-white">{notification.title}</div>
             {notification.description && (
               <div className="text-sm text-blue-200 mt-1">{notification.description}</div>
             )}
@@ -35,11 +35,11 @@ const Notifications = () => {
         onFooterClick={() => setShowAllModal(true)}
       >
         {isLoading ? (
-          <div className="text-center py-4">Loading notifications...</div>
+          <div className="text-center py-4 text-white">Loading notifications...</div>
         ) : error ? (
-          <div className="text-center py-4 text-red-600 bg-red-100 rounded">{error}</div>
+          <div className="text-center py-4 text-red-400 bg-navy-800 rounded">{error}</div>
         ) : notifications.length === 0 ? (
-          <div className="text-center py-4">No notifications</div>
+          <div className="text-center py-4 text-white">No notifications</div>
         ) : (
           renderNotificationsList(notifications.slice(0, 2))
         )}
@@ -48,15 +48,17 @@ const Notifications = () => {
       {/* All Notifications Modal */}
       {showAllModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto relative">
+          <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800">
             <button
               onClick={() => setShowAllModal(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
             >
-              <X size={24} />
+              <X size={32} />
             </button>
-            <h2 className="text-2xl font-bold mb-4">All Notifications</h2>
-            {renderNotificationsList(notifications)}
+            <h2 className="text-3xl font-extrabold text-white text-center mb-10 tracking-wide w-full">All Notifications</h2>
+            <div className="space-y-6">
+              {renderNotificationsList(notifications)}
+            </div>
           </div>
         </div>
       )}

@@ -4,32 +4,22 @@ import useStore from '../../store/useStore';
 import { X } from 'lucide-react';
 
 const BookedAmenities = ({ onBookAmenity }) => {
-  const { amenityBookings, fetchAmenities, isLoading } = useStore();
+  const { amenityBookings, fetchAmenityBookings, isLoading } = useStore();
   const [showAllModal, setShowAllModal] = useState(false);
   
   useEffect(() => {
-    fetchAmenities();
-  }, [fetchAmenities]);
+    fetchAmenityBookings();
+  }, [fetchAmenityBookings]);
   
-  // Get amenity name by ID (in a real app, you would have a more robust data structure)
-  const getAmenityName = (amenityId) => {
-    const amenityNames = {
-      '1': 'Clubhouse',
-      '2': 'Swimming Pool',
-      '3': 'Amphitheatre',
-      '4': 'Garden',
-      '5': 'Kids Pool',
-    };
-    
-    return amenityNames[amenityId] || 'Unknown';
-  };
-
   const renderBookingsList = (bookings) => (
     <div className="space-y-2">
       {bookings.map(booking => (
-        <div key={booking.id} className="flex justify-between">
-          <div className="text-lg">{booking.date.split('-')[1] + ' ' + booking.date.split('-')[2]}</div>
-          <div className="text-lg text-right">{getAmenityName(booking.amenityId)}</div>
+        <div key={booking._id} className="flex justify-between items-center">
+          <div>
+            <div className="font-bold text-lg">{booking.amenity?.name || 'Unknown Amenity'}</div>
+            <div className="text-xs text-blue-200">{booking.date}</div>
+          </div>
+          <div className={`text-sm font-semibold px-3 py-1 rounded-full ${booking.status === 'booked' ? 'bg-green-700 text-green-200' : 'bg-red-700 text-red-200'}`}>{booking.status}</div>
         </div>
       ))}
     </div>
@@ -66,9 +56,12 @@ const BookedAmenities = ({ onBookAmenity }) => {
                 <div className="text-center text-lg text-blue-100">No booked amenities.</div>
               ) : (
                 amenityBookings.map(booking => (
-                  <div key={booking.id} className="bg-navy-800 text-white rounded-xl px-6 py-4 flex justify-between items-center text-lg font-semibold border border-navy-700">
-                    <span>{booking.date.split('-')[1] + ' ' + booking.date.split('-')[2]}</span>
-                    <span>{getAmenityName(booking.amenityId)}</span>
+                  <div key={booking._id} className="bg-navy-800 text-white rounded-xl px-6 py-4 flex justify-between items-center text-lg font-semibold border border-navy-700">
+                    <div>
+                      <div className="font-bold">{booking.amenity?.name || 'Unknown Amenity'}</div>
+                      <div className="text-xs text-blue-200">{booking.date}</div>
+                    </div>
+                    <div className={`text-sm font-semibold px-3 py-1 rounded-full ${booking.status === 'booked' ? 'bg-green-700 text-green-200' : 'bg-red-700 text-red-200'}`}>{booking.status}</div>
                   </div>
                 ))
               )}

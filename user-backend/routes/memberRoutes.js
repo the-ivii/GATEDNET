@@ -105,17 +105,16 @@ router.post('/vote', async (req, res) => {
       return res.status(400).json({ message: 'Invalid option index' });
     }
 
-    // Check if member has already voted in this poll
-    const alreadyVoted = poll.options.some(option => 
-      option.votes.some(vote => vote.member.toString() === memberId)
-    );
-
-    if (alreadyVoted) {
+    // Prevent double voting by checking poll.voters
+    if (poll.voters && poll.voters.includes(memberId)) {
       return res.status(400).json({ message: 'You have already voted in this poll' });
     }
 
-    // Add the vote
-    poll.options[optionIndex].votes.push({ member: memberId });
+    // Increment the votes number
+    poll.options[optionIndex].votes += 1;
+    // Add memberId to voters
+    poll.voters = poll.voters || [];
+    poll.voters.push(memberId);
 
     await poll.save();
     console.log('Vote recorded successfully');
@@ -123,7 +122,7 @@ router.post('/vote', async (req, res) => {
 
   } catch (err) {
     console.error('Error recording vote:', err);
-    res.status(500).json({ message: 'Error recording vote' });
+    res.status(500).json({ message: 'Error recording vote', error: err.message });
   }
 });
 
@@ -147,9 +146,14 @@ router.post('/amenity-bookings', async (req, res) => {
     if (!amenity) {
       return res.status(404).json({ message: 'Amenity not found' });
     }
+    // Find the member
+    const member = await Member.findById(memberId);
+    if (!member) {
+      return res.status(404).json({ message: 'Member not found' });
+    }
     // Create the booking
     const booking = new AmenityBooking({
-      amenity: amenity.name,
+      amenity: amenityId,
       date,
       member: memberId,
       status: 'booked'
@@ -158,6 +162,50 @@ router.post('/amenity-bookings', async (req, res) => {
     res.status(201).json(booking);
   } catch (err) {
     res.status(400).json({ message: 'Error booking amenity', error: err.message });
+  }
+});
+
+// GET all amenity bookings (with amenity and member populated)
+router.get('/amenity-bookings', async (req, res) => {
+  try {
+    const bookings = await AmenityBooking.find({})
+      .populate('amenity', 'name')
+      .populate('member', 'name');
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching bookings' });
+  }
+});
+
+// Check amenity availability
+router.get('/amenities/:id/availability', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { date } = req.query;
+    if (!date) return res.status(400).json({ message: 'Date is required' });
+    // Check if there is already a booking for this amenity and date
+    const booking = await AmenityBooking.findOne({ amenity: id, date });
+    res.json(!booking); // true if available, false if already booked
+  } catch (err) {
+    res.status(500).json({ message: 'Error checking availability' });
+  }
+});
+
+// GET poll results with percentage breakdown for a given pollId
+router.get('/polls/:pollId/results', async (req, res) => {
+  try {
+    const { pollId } = req.params;
+    const poll = await Poll.findById(pollId);
+    if (!poll) return res.status(404).json({ message: 'Poll not found' });
+    const totalVotes = poll.options.reduce((sum, option) => sum + (option.votes || 0), 0);
+    const results = poll.options.map(option => ({
+      text: option.text,
+      votes: option.votes || 0,
+      percentage: totalVotes > 0 ? ((option.votes || 0) / totalVotes * 100).toFixed(2) : '0.00'
+    }));
+    res.json({ pollId, title: poll.title, totalVotes, results });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching poll results' });
   }
 });
 

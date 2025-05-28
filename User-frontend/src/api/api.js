@@ -78,18 +78,8 @@ export const fetchAmenities = async () => {
 };
 
 export const getAmenityBookings = async () => {
-  // Mocked response for demo
-  return [
-    {
-      id: '1',
-      amenityId: '1',
-      userId: '1',
-      date: '2025-04-22',
-      startTime: '10:00',
-      endTime: '12:00',
-      status: 'confirmed',
-    },
-  ];
+  const response = await api.get('/amenity-bookings');
+  return response.data;
 };
 
 export const checkAmenityAvailability = async (amenityId, date) => {
@@ -104,11 +94,12 @@ export const checkAmenityAvailability = async (amenityId, date) => {
   }
 };
 
-export const bookAmenity = async (amenityId, date) => {
+export const bookAmenity = async (amenityId, date, memberId) => {
   try {
-    const response = await axios.post(`${API_URL}/amenities/book`, {
+    const response = await axios.post(`${API_URL}/amenity-bookings`, {
       amenityId,
-      date
+      date,
+      memberId
     });
     return response.data;
   } catch (error) {
@@ -129,7 +120,12 @@ export const cancelAmenityBooking = async (bookingId) => {
 
 // Announcements API
 export const getAnnouncements = async () => {
-  const res = await api.get('/announcements');
+  const token = localStorage.getItem('token');
+  const res = await api.get('/announcements', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
   return res.data;
 };
 
