@@ -25,7 +25,8 @@ const useStore = create((set, get) => ({
   login: async (name, flat) => {
     set({ isLoading: true, error: null });
     try {
-      const { member } = await api.login(name, flat);
+      const res = await api.login(name, flat);
+      const member = res.data.member; // Access member from res.data
       set({
         user: member,
         isAuthenticated: true,
@@ -35,7 +36,7 @@ const useStore = create((set, get) => ({
       localStorage.setItem('token', 'mock-token'); // Optionally set a token if you implement JWT
     } catch (error) {
       set({
-        error: 'Invalid credentials',
+        error: error.response?.data?.message || error.message || 'Invalid credentials',
         isLoading: false,
       });
     }
@@ -57,6 +58,7 @@ const useStore = create((set, get) => ({
   updateUserSettings: async (settings) => {
     set({ isLoading: true, error: null });
     try {
+      // In a real app, this would call an API
       const updatedUser = { ...get().user, ...settings };
       localStorage.setItem('user', JSON.stringify(updatedUser));
       set({ user: updatedUser, isLoading: false });
@@ -78,10 +80,12 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const polls = await api.getActivePolls();
-      set({ activePolls: polls, isLoading: false });
+      console.log('Fetched polls in store:', polls);
+      set({ activePolls: polls || [], isLoading: false }); // Ensure activePolls is always an array
     } catch (error) {
+      console.error('Error fetching polls in store:', error);
       set({
-        error: 'Failed to fetch polls',
+        error: error.response?.data?.message || error.message || 'Failed to fetch polls',
         isLoading: false,
       });
     }
@@ -91,10 +95,10 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const updates = await api.getMaintenanceUpdates();
-      set({ maintenanceUpdates: updates, isLoading: false });
+      set({ maintenanceUpdates: updates || [], isLoading: false });
     } catch (error) {
       set({
-        error: 'Failed to fetch maintenance updates',
+        error: error.response?.data?.message || error.message || 'Failed to fetch maintenance updates',
         isLoading: false,
       });
     }
@@ -104,10 +108,10 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const notifications = await api.getNotifications();
-      set({ notifications, isLoading: false });
+      set({ notifications: notifications || [], isLoading: false });
     } catch (error) {
       set({
-        error: 'Failed to fetch notifications',
+        error: error.response?.data?.message || error.message || 'Failed to fetch notifications',
         isLoading: false,
       });
     }
@@ -117,10 +121,10 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const bookings = await api.getAmenities(); // getAmenities returns bookings from backend
-      set({ amenityBookings: bookings, isLoading: false });
+      set({ amenityBookings: bookings || [], isLoading: false });
     } catch (error) {
       set({
-        error: 'Failed to fetch amenity bookings',
+        error: error.response?.data?.message || error.message || 'Failed to fetch amenity bookings',
         isLoading: false,
       });
     }
@@ -130,10 +134,10 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const announcements = await api.getAnnouncements();
-      set({ announcements, isLoading: false });
+      set({ announcements: announcements || [], isLoading: false });
     } catch (error) {
       set({
-        error: 'Failed to fetch announcements',
+        error: error.response?.data?.message || error.message || 'Failed to fetch announcements',
         isLoading: false,
       });
     }
@@ -151,12 +155,17 @@ const useStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const memberId = get().user?._id;
-      await api.castVote(pollId, optionIndex, memberId);
+      if (!memberId) {
+         throw new Error('User not logged in.');
+      }
+      const res = await api.castVote(pollId, optionIndex, memberId);
+      console.log('Vote cast response:', res.data);
       await get().fetchActivePolls(); // Refresh polls after voting
       set({ isLoading: false });
     } catch (error) {
+       console.error('Error casting vote in store:', error);
       set({
-        error: 'Failed to cast vote',
+        error: error.response?.data?.message || error.message || 'Failed to cast vote',
         isLoading: false,
       });
     }

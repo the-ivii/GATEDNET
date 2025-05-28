@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import ActivePolls from '../components/Dashboard/ActivePolls';
 import MaintenanceUpdates from '../components/Dashboard/MaintenanceUpdates';
@@ -8,7 +9,6 @@ import Announcements from '../components/Dashboard/Announcements';
 import PollModal from '../components/Poll/PollModal';
 import AmenityModal from '../components/Amenity/AmenityModal';
 import SettingsModal from '../components/Settings/SettingsModal';
-import AllPollsModal from '../components/Poll/AllPollsModal';
 import AllMaintenanceModal from '../components/Maintenance/AllMaintenanceModal';
 import AllNotificationsModal from '../components/Dashboard/AllNotificationsModal';
 import AllAnnouncementsModal from '../components/Dashboard/AllAnnouncementsModal';
@@ -18,10 +18,11 @@ const Dashboard = () => {
   const [activePollId, setActivePollId] = useState(null);
   const [showAmenityModal, setShowAmenityModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [showAllPollsModal, setShowAllPollsModal] = useState(false);
   const [showAllMaintenanceModal, setShowAllMaintenanceModal] = useState(false);
   const [showAllNotificationsModal, setShowAllNotificationsModal] = useState(false);
   const [showAllAnnouncementsModal, setShowAllAnnouncementsModal] = useState(false);
+  
+  const navigate = useNavigate();
   
   const handleViewPoll = (pollId) => {
     setActivePollId(pollId);
@@ -35,14 +36,14 @@ const Dashboard = () => {
     setShowAmenityModal(true);
   };
   
-  // Handles sidebar navigation and opens corresponding modals
+  // Handles sidebar navigation and opens corresponding modals/pages
   const handleSidebarItemClick = (item) => {
     switch (item) {
       case 'settings':
         setShowSettingsModal(true);
         break;
       case 'voting':
-        setShowAllPollsModal(true);
+        navigate('/user/polls'); // Navigate to the new polls page
         break;
       case 'maintenance':
         setShowAllMaintenanceModal(true);
@@ -62,7 +63,7 @@ const Dashboard = () => {
           <div>
             <ActivePolls 
               onViewPoll={handleViewPoll}
-              onSeeAll={() => setShowAllPollsModal(true)}
+              onSeeAll={() => navigate('/user/polls')} // Navigate to polls page
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -80,11 +81,6 @@ const Dashboard = () => {
       <PollModal pollId={activePollId} onClose={handleClosePollModal} />
       <AmenityModal isOpen={showAmenityModal} onClose={() => setShowAmenityModal(false)} />
       <SettingsModal isOpen={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
-      <AllPollsModal 
-        isOpen={showAllPollsModal} 
-        onClose={() => setShowAllPollsModal(false)}
-        onViewPoll={handleViewPoll}
-      />
       <AllMaintenanceModal 
         isOpen={showAllMaintenanceModal} 
         onClose={() => setShowAllMaintenanceModal(false)} 

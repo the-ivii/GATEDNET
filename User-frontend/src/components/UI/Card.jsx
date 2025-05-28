@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Card = ({ title, children, footer, onClick }) => {
+const Card = ({ title, children, footer, onClick, onFooterClick }) => {
   return (
     <div 
       className={`bg-navy-900 rounded-lg overflow-hidden shadow-md mb-6 text-white ${onClick ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''}`}
@@ -17,7 +17,10 @@ const Card = ({ title, children, footer, onClick }) => {
       </div>
       
       {footer && (
-        <div className="p-3 bg-navy-800 text-center text-blue-300 hover:text-blue-200 transition-colors">
+        <div 
+          className={`p-3 bg-navy-800 text-center text-blue-300 hover:text-blue-200 transition-colors ${onFooterClick ? 'cursor-pointer' : ''}`}
+          onClick={onFooterClick}
+        >
           {footer}
         </div>
       )}

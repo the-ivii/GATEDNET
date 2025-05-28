@@ -4,11 +4,14 @@ import useStore from '../../store/useStore';
 import PollItem from './PollItem';
 
 const AllPollsModal = ({ isOpen, onClose, onViewPoll }) => {
-  const { activePolls, isLoading } = useStore();
+  const { activePolls, isLoading, error } = useStore();
   
   const calculateProgress = (poll) => {
-    const totalVotes = poll.options.reduce((sum, option) => sum + option.votes, 0);
-    return Math.min(100, (totalVotes / 300) * 100);
+    // Calculate progress based on actual vote count from backend
+    const totalVotes = poll.options.reduce((sum, option) => sum + (option.votes ? option.votes.length : 0), 0);
+    // Use the same placeholder as in ActivePolls for consistency
+    const placeholderTotal = 10; 
+    return Math.min(100, (totalVotes / placeholderTotal) * 100);
   };
   
   return (
@@ -16,16 +19,21 @@ const AllPollsModal = ({ isOpen, onClose, onViewPoll }) => {
       <div className="space-y-6">
         {isLoading ? (
           <div className="text-center py-4">Loading polls...</div>
+        ) : error ? (
+          <div className="text-center py-4 text-red-600 bg-red-100 rounded">{error}</div>
         ) : activePolls.length === 0 ? (
           <div className="text-center py-4">No active polls at the moment</div>
         ) : (
           activePolls.map(poll => (
             <PollItem
-              key={poll.id}
-              id={poll.id}
+              key={poll._id || poll.id}
+              id={poll._id || poll.id}
               title={poll.title}
               progress={calculateProgress(poll)}
-              onClick={onViewPoll}
+              onClick={() => {
+                onViewPoll(poll._id || poll.id);
+                onClose(); // Close the AllPollsModal when viewing a single poll
+              }}
             />
           ))
         )}
