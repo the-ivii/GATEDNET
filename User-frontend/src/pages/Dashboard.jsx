@@ -6,6 +6,12 @@ import Notifications from '../components/Dashboard/Notifications';
 import BookedAmenities from '../components/Dashboard/BookedAmenities';
 import Announcements from '../components/Dashboard/Announcements';
 import SettingsModal from '../components/Settings/SettingsModal';
+import PollVotingModal from '../components/Poll/PollVotingModal';
+import AmenityBookingModal from '../components/Amenities/AmenityBookingModal';
+import AllPollsModal from '../components/Poll/AllPollsModal';
+import AllMaintenanceModal from '../components/Maintenance/AllMaintenanceModal';
+import AllNotificationsModal from '../components/Notifications/AllNotificationsModal';
+import AllAnnouncementsModal from '../components/Announcements/AllAnnouncementsModal';
 import useStore from '../store/useStore';
 
 const Dashboard = () => {
@@ -17,11 +23,21 @@ const Dashboard = () => {
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showAnnouncementsModal, setShowAnnouncementsModal] = useState(false);
 
+  const [isVotingModalOpen, setIsVotingModalOpen] = useState(false);
+  const [selectedPollForVoting, setSelectedPollForVoting] = useState(null);
+
+  const [isAmenityBookingModalOpen, setIsAmenityBookingModalOpen] = useState(false);
+  
+  const [isAllPollsModalOpen, setIsAllPollsModalOpen] = useState(false);
+  const [isAllMaintenanceModalOpen, setIsAllMaintenanceModalOpen] = useState(false);
+  const [isAllNotificationsModalOpen, setIsAllNotificationsModalOpen] = useState(false);
+  const [isAllAnnouncementsModalOpen, setIsAllAnnouncementsModalOpen] = useState(false);
+
   const {
     fetchActivePolls,
     fetchMaintenanceUpdates,
     fetchNotifications,
-    fetchAmenityBookings,
+    fetchAmenities,
     fetchAnnouncements,
   } = useStore();
 
@@ -29,9 +45,9 @@ const Dashboard = () => {
     fetchActivePolls();
     fetchMaintenanceUpdates();
     fetchNotifications();
-    fetchAmenityBookings();
+    fetchAmenities();
     fetchAnnouncements();
-  }, [fetchActivePolls, fetchMaintenanceUpdates, fetchNotifications, fetchAmenityBookings, fetchAnnouncements]);
+  }, [fetchActivePolls, fetchMaintenanceUpdates, fetchNotifications, fetchAmenities, fetchAnnouncements]);
 
   const handleSidebarItemClick = (item) => {
     switch (item) {
@@ -39,20 +55,64 @@ const Dashboard = () => {
         setShowPollsModal(true);
         break;
       case 'maintenance':
-        setShowMaintenanceModal(true);
+        setIsAllMaintenanceModalOpen(true);
+        setShowMaintenanceModal(false);
         break;
       case 'amenities':
-        setShowAmenitiesModal(true);
+        setIsAmenityBookingModalOpen(true);
         break;
       case 'settings':
         setShowSettingsModal(true);
         break;
       case 'bylaws':
-        // Handle bylaws navigation
+        window.open('https://drive.google.com/file/d/1D3CGW-mc2SGMJM8LnoDz-HSmLxFWnBYw/view?usp=sharing', '_blank');
+        break;
+      case 'notifications':
+        setIsAllNotificationsModalOpen(true);
+        setShowNotificationsModal(false);
+        break;
+      case 'announcements':
+        setIsAllAnnouncementsModalOpen(true);
+        setShowAnnouncementsModal(false);
         break;
       default:
         setActiveItem(item);
     }
+  };
+
+  const handlePollSelectForVoting = (poll) => {
+    setSelectedPollForVoting(poll);
+    setIsVotingModalOpen(true);
+  };
+
+  const handleCloseVotingModal = () => {
+    setIsVotingModalOpen(false);
+    setSelectedPollForVoting(null);
+  };
+
+  const handleBookNewAmenityClick = () => {
+    setIsAmenityBookingModalOpen(true);
+    setShowAmenitiesModal(false);
+  };
+
+  const handleCloseAmenityBookingModal = () => {
+    setIsAmenityBookingModalOpen(false);
+    fetchAmenities();
+  };
+
+  const handleCloseAllMaintenanceModal = () => {
+    setIsAllMaintenanceModalOpen(false);
+    fetchMaintenanceUpdates();
+  };
+
+  const handleCloseAllNotificationsModal = () => {
+    setIsAllNotificationsModalOpen(false);
+    fetchNotifications();
+  };
+
+  const handleCloseAllAnnouncementsModal = () => {
+    setIsAllAnnouncementsModalOpen(false);
+    fetchAnnouncements();
   };
 
   return (
@@ -66,12 +126,12 @@ const Dashboard = () => {
           {/* Left Column - 2/3 width on medium+ screens */}
           <div className="md:col-span-2 space-y-6 flex flex-col">
             {/* Active Polls (Top Left) */}
-            <ActivePolls />
+            <ActivePolls onPollSelect={handlePollSelectForVoting} />
 
             {/* Bottom Left Row - Split into 2 columns on medium screens and above */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
               {/* Booked Amenities (Bottom Left - 1) */}
-              <BookedAmenities />
+              <BookedAmenities onBookAmenity={handleBookNewAmenityClick} />
 
               {/* Announcements (Bottom Left - 2) */}
               <Announcements />
@@ -95,7 +155,7 @@ const Dashboard = () => {
         onClose={() => setShowSettingsModal(false)}
       />
 
-      {/* Polls Modal */}
+      {/* Original Modals (triggered by card footers and now sidebar for Polls) */}
       {showPollsModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -112,10 +172,25 @@ const Dashboard = () => {
                 </svg>
               </button>
             </div>
-            <ActivePolls isModal={true} />
+            <ActivePolls isModal={true} onPollSelect={handlePollSelectForVoting} />
           </div>
         </div>
       )}
+
+      {/* Individual Poll Voting Modal */}
+      {selectedPollForVoting && (
+        <PollVotingModal
+          isOpen={isVotingModalOpen}
+          onClose={handleCloseVotingModal}
+          poll={selectedPollForVoting}
+        />
+      )}
+
+      {/* Amenity Booking Calendar Modal (New) */}
+      <AmenityBookingModal
+        isOpen={isAmenityBookingModalOpen}
+        onClose={handleCloseAmenityBookingModal}
+      />
 
       {/* Maintenance Updates Modal */}
       {showMaintenanceModal && (
@@ -139,7 +214,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Amenities Modal */}
+      {/* Amenities Modal (for listing all booked amenities, triggered by footer) */}
       {showAmenitiesModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -156,7 +231,7 @@ const Dashboard = () => {
                 </svg>
               </button>
             </div>
-            <BookedAmenities isModal={true} />
+            <BookedAmenities isModal={true} onBookAmenity={handleBookNewAmenityClick} />
           </div>
         </div>
       )}
@@ -204,6 +279,22 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* New List Modals (triggered by sidebar clicks) */}
+      <AllMaintenanceModal
+        isOpen={isAllMaintenanceModalOpen}
+        onClose={handleCloseAllMaintenanceModal}
+      />
+
+      <AllNotificationsModal
+        isOpen={isAllNotificationsModalOpen}
+        onClose={handleCloseAllNotificationsModal}
+      />
+
+      <AllAnnouncementsModal
+        isOpen={isAllAnnouncementsModalOpen}
+        onClose={handleCloseAllAnnouncementsModal}
+      />
     </div>
   );
 };
