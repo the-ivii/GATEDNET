@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { getAllPolls, closePoll, deletePoll } from '../api/polls';
+import { getAllPolls, updatePoll, deletePoll } from '../api/polls';
 import 'react-toastify/dist/ReactToastify.css';
 import './PollResults.css';
 
@@ -29,16 +29,19 @@ const PollResults = () => {
         setError(response.error);
         // Fallback to localStorage if API fails
         const storedPolls = JSON.parse(localStorage.getItem('polls')) || [];
-        setPolls(storedPolls);
+        // Assuming localStorage polls have a 'published' field for active status
+        setPolls(storedPolls.map(poll => ({ ...poll, isActive: poll.published }))); 
       } else {
-        setPolls(response || []);
+        // Map API response polls to ensure 'isActive' field exists
+        setPolls(response.map(poll => ({ ...poll, isActive: poll.isActive })));
         setError(null);
       }
     } catch (err) {
       setError('Failed to fetch polls: ' + err.message);
       // Fallback to localStorage
       const storedPolls = JSON.parse(localStorage.getItem('polls')) || [];
-      setPolls(storedPolls);
+      // Assuming localStorage polls have a 'published' field for active status
+      setPolls(storedPolls.map(poll => ({ ...poll, isActive: poll.published })));
     } finally {
       setLoading(false);
     }
@@ -48,17 +51,22 @@ const PollResults = () => {
     fetchPolls();
   }, [statusFilter]);
 
-  const handleClosePoll = async (id) => {
+  const handleToggleActive = async (poll) => {
     try {
-      const response = await closePoll(id);
+      const updatedPoll = { ...poll, isActive: !poll.isActive };
+      const response = await updatePoll(poll._id, { isActive: updatedPoll.isActive });
+      
       if (response.error) {
         toast.error(response.error);
       } else {
-        toast.success('Poll closed successfully');
-        fetchPolls();
+        toast.success(`Poll ${updatedPoll.isActive ? 'activated' : 'deactivated'} successfully`);
+        // Update the state with the modified poll
+        setPolls(polls.map(p => p._id === poll._id ? updatedPoll : p));
+        // Update localStorage for consistency (if needed)
+        // Note: localStorage fallback might need adjustment to handle 'isActive'
       }
     } catch (err) {
-      toast.error('Error closing poll: ' + err.message);
+      toast.error('Error updating poll status: ' + err.message);
     }
   };
 
@@ -70,7 +78,9 @@ const PollResults = () => {
           toast.error(response.error);
         } else {
           toast.success('Poll deleted successfully');
-          fetchPolls();
+          setPolls(polls.filter(poll => poll._id !== id));
+          // Update localStorage for consistency (if needed)
+          // Note: localStorage fallback might need adjustment to handle deleted items
         }
       } catch (err) {
         toast.error('Error deleting poll: ' + err.message);
@@ -78,11 +88,13 @@ const PollResults = () => {
     }
   };
 
-  // Old fallback function for localStorage compatibility
+  // Old fallback function for localStorage compatibility (can be removed or updated)
   const togglePublish = (index) => {
     const updatedPolls = [...polls];
     const poll = updatedPolls[index];
     poll.published = !poll.published;
+    // Update isActive for consistency with new state structure
+    poll.isActive = poll.published;
     localStorage.setItem('polls', JSON.stringify(updatedPolls));
     setPolls(updatedPolls);
 
@@ -122,15 +134,15 @@ const PollResults = () => {
       ) : (
         polls.map((poll, index) => {
           // Handle both API response format and localStorage format
-          const isApiFormat = poll.options && Array.isArray(poll.options) && poll.options[0].text;
+          const isApiFormat = poll._id && poll.options && Array.isArray(poll.options) && typeof poll.isActive !== 'undefined'; // Improved check
           
           const options = isApiFormat 
             ? poll.options.map(opt => opt.text) 
-            : (poll.options || []);
+            : (poll.options || []).map(opt => opt.text); // Ensure text is accessed correctly
           
           const votes = isApiFormat 
-            ? poll.options.map(opt => opt.votes) 
-            : (poll.votes || []);
+            ? poll.options.map(opt => opt.votes.length) // Count votes from the array
+            : (poll.votes || []); // Assuming localStorage stores total votes per option
           
           const total = votes.reduce((a, b) => a + b, 0) || 1;
           const percentages = votes.map(v => ((v / total) * 100).toFixed(1));
@@ -160,10 +172,12 @@ const PollResults = () => {
           };
 
           return (
-            <div className={`poll-card ${poll.status === 'closed' ? 'closed' : ''}`} key={poll._id || index}>
-              <div className="poll-header">
-                <h4 className="poll-question">{poll.title || poll.question}</h4>
-                {poll.status && (
+            <div className={`poll-card ${poll.isActive === false ? 'closed' : ''}`} key={poll._id || index}> {/* Use isActive for class */}              <div className="poll-header">
+                <h4 className="poll-question">{poll.question || poll.title}</h4> {/* Use question for API, title for localStorage */}                {typeof poll.isActive !== 'undefined' ? ( // Display status badge based on isActive
+                  <span className={`poll-status-badge ${poll.isActive ? 'active' : 'closed'}`}>
+                    {poll.isActive ? 'Active' : 'Closed'}
+                  </span>
+                ) : poll.status && ( // Fallback for old status field
                   <span className={`poll-status-badge ${poll.status}`}>
                     {poll.status.charAt(0).toUpperCase() + poll.status.slice(1)}
                   </span>
@@ -178,23 +192,21 @@ const PollResults = () => {
                 Total Votes: <strong>{total}</strong>
               </p>
               
-              {poll.endDate && (
+              {poll.endDate && ( // Display end date if available
                 <p className="poll-end-date">
                   Ends on: <strong>{new Date(poll.endDate).toLocaleDateString()}</strong>
                 </p>
               )}
 
               <div className="poll-actions">
-                {poll._id ? (
+                {poll._id ? ( // Show action buttons only for API polls
                   <>
-                    {poll.status === 'active' && (
-                      <button 
-                        className="close-btn"
-                        onClick={() => handleClosePoll(poll._id)}
-                      >
-                        Close Poll
-                      </button>
-                    )}
+                    <button 
+                      className="toggle-active-btn"
+                      onClick={() => handleToggleActive(poll)}
+                    >
+                      {poll.isActive ? 'Deactivate Poll' : 'Activate Poll'}
+                    </button>
                     <button 
                       className="delete-btn"
                       onClick={() => handleDeletePoll(poll._id)}
@@ -203,13 +215,13 @@ const PollResults = () => {
                     </button>
                   </>
                 ) : (
-                  // Fallback for localStorage data
-                  <button
-                    className="publish-btn"
-                    onClick={() => togglePublish(index)}
-                  >
-                    {poll.published ? 'Unpublish' : 'Publish'} Result
-                  </button>
+                  // Fallback for localStorage data - Keep old toggle if needed
+                   <button
+                     className="publish-btn"
+                     onClick={() => togglePublish(index)}
+                   >
+                     {poll.published ? 'Unpublish' : 'Publish'} Result
+                   </button>
                 )}
               </div>
             </div>

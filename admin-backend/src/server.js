@@ -22,12 +22,12 @@ app.use('/api/admin', adminRoutes);
 // Member, announcement, and reminder routes
 const memberRoutes = require('./routes/memberRoutes');
 const announcementRoute = require('./routes/anoncementRoute');
-const reminderRoutes = require('./routes/reminderRoutes');
+
 const taskRoutes = require('./routes/taskRoutes');
 
 app.use('/api/members', memberRoutes);
 app.use('/api/announcements', announcementRoute);
-app.use('/api/reminders', reminderRoutes);
+
 app.use('/api/tasks', taskRoutes);
 
 // Basic route

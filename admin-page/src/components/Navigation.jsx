@@ -87,21 +87,6 @@ const Navigation = () => {
             ]
         },
         {
-            key: 'reminders',
-            icon: <CalendarOutlined />,
-            label: 'Reminders',
-            children: [
-                {
-                    key: '/reminders',
-                    label: 'View Reminders'
-                },
-                {
-                    key: '/add-reminder',
-                    label: 'Add Reminder'
-                }
-            ]
-        },
-        {
             key: 'maintenance',
             icon: <ToolOutlined />,
             label: 'Maintenance',
@@ -123,11 +108,6 @@ const Navigation = () => {
                     label: 'View Tasks'
                 }
             ]
-        },
-        {
-            key: '/tasks',
-            icon: <CheckSquareOutlined />,
-            label: 'Task Management'
         }
     ];
 
