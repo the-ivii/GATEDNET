@@ -28,12 +28,14 @@ const useStore = create((set, get) => ({
       const res = await api.login(name, flat);
       console.log('Login response:', res);
       const member = res.member;
+      // Explicitly add a mock email for testing purposes
+      const userWithEmail = { ...member, email: member.email || 'mockuser@example.com' };
       set({
-        user: member,
+        user: userWithEmail,
         isAuthenticated: true,
         isLoading: false,
       });
-      localStorage.setItem('user', JSON.stringify(member));
+      localStorage.setItem('user', JSON.stringify(userWithEmail));
       localStorage.setItem('token', 'mock-token'); // Optionally set a token if you implement JWT
     } catch (error) {
       console.error('Login error:', error.response?.data?.message || error.message || error);
@@ -55,6 +57,7 @@ const useStore = create((set, get) => ({
       amenityBookings: [],
       announcements: [],
     });
+    // No need to explicitly redirect here, the router should handle based on isAuthenticated state
   },
   
   updateUserSettings: async (settings) => {
@@ -72,9 +75,43 @@ const useStore = create((set, get) => ({
   updatePassword: async (currentPassword, newPassword) => {
     set({ isLoading: true, error: null });
     try {
+      await api.updatePassword(currentPassword, newPassword);
+      // After successful password update, log out the user
+      get().logout();
       set({ isLoading: false });
+      // Redirect to login page
+      window.location.href = '/login';
     } catch (error) {
-      set({ error: 'Failed to update password', isLoading: false });
+      set({ 
+        error: error.response?.data?.message || error.message || 'Failed to update password', 
+        isLoading: false 
+      });
+      throw error; // Re-throw to handle in the component
+    }
+  },
+  
+  // Action: Fetches full user details if incomplete (kept for structure, but login now ensures email)
+  fetchUserDetails: async () => {
+    const state = get();
+    console.log('Fetching user details. Current user state:', state.user);
+    // This action might not be strictly necessary if login always provides email
+    if (state.isAuthenticated && !state.user?.email) {
+      console.log('Attempting to fetch user details (simulated)');
+      set({ isLoading: true, error: null });
+      try {
+        // Simulate fetching user details with email
+        const currentUser = state.user || {};
+        // Assume we fetched the full user details, including email
+        const fetchedUserDetails = { ...currentUser, email: currentUser.email || 'fetched.user@example.com' }; // Simulate fetched email
+        set({ user: fetchedUserDetails, isLoading: false });
+        localStorage.setItem('user', JSON.stringify(fetchedUserDetails));
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        set({
+          error: error.response?.data?.message || error.message || 'Failed to fetch user details',
+          isLoading: false,
+        });
+      }
     }
   },
   

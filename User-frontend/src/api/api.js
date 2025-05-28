@@ -33,6 +33,11 @@ export const logout = () => {
   localStorage.removeItem('token');
 };
 
+export const updatePassword = async (currentPassword, newPassword) => {
+  const res = await api.post('/update-password', { currentPassword, newPassword });
+  return res.data;
+};
+
 // Polls API
 export const getActivePolls = async () => {
   const res = await api.get('/polls');
