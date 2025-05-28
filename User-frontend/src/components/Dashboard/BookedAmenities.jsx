@@ -4,12 +4,12 @@ import useStore from '../../store/useStore';
 import { X } from 'lucide-react';
 
 const BookedAmenities = ({ onBookAmenity }) => {
-  const { amenityBookings, fetchAmenityBookings, isLoading } = useStore();
+  const { amenityBookings, fetchAmenities, isLoading } = useStore();
   const [showAllModal, setShowAllModal] = useState(false);
   
   useEffect(() => {
-    fetchAmenityBookings();
-  }, [fetchAmenityBookings]);
+    fetchAmenities();
+  }, [fetchAmenities]);
   
   // Get amenity name by ID (in a real app, you would have a more robust data structure)
   const getAmenityName = (amenityId) => {

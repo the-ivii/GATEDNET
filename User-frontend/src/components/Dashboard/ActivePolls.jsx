@@ -5,7 +5,7 @@ import useStore from '../../store/useStore';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
 
-const ActivePolls = ({ onViewPoll }) => {
+const ActivePolls = ({ onViewPoll, onPollSelect }) => {
   const { activePolls, fetchActivePolls, isLoading, error } = useStore();
   const navigate = useNavigate();
   const [showAllModal, setShowAllModal] = useState(false);
@@ -37,7 +37,7 @@ const ActivePolls = ({ onViewPoll }) => {
           id={poll._id || poll.id}
           title={poll.title || poll.question}
           progress={calculateProgress(poll)}
-          onClick={() => onViewPoll(poll._id || poll.id)}
+          onClick={() => onPollSelect(poll)}
           className={isModal ? "text-gray-900" : "text-white"}
         />
       ))}
