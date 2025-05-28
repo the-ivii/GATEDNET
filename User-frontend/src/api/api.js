@@ -67,9 +67,14 @@ export const getNotifications = async () => {
 };
 
 // Amenities API
-export const getAmenities = async () => {
-  const res = await api.get('/amenities');
-  return res.data;
+export const fetchAmenities = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/amenities`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching amenities:', error);
+    throw error;
+  }
 };
 
 export const getAmenityBookings = async () => {
@@ -88,15 +93,38 @@ export const getAmenityBookings = async () => {
 };
 
 export const checkAmenityAvailability = async (amenityId, date) => {
-  // In a real app, this would check with the backend
-  // For demo, return true for most dates except a few
-  const unavailableDates = ['2025-05-01', '2025-05-15', '2025-05-20'];
-  return !unavailableDates.includes(date);
+  try {
+    const response = await axios.get(`${API_URL}/amenities/${amenityId}/availability`, {
+      params: { date }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error checking amenity availability:', error);
+    throw error;
+  }
 };
 
-export const bookAmenity = async (amenity, date, memberId) => {
-  const res = await api.post('/book-amenity', { amenity, date, memberId });
-  return res.data;
+export const bookAmenity = async (amenityId, date) => {
+  try {
+    const response = await axios.post(`${API_URL}/amenities/book`, {
+      amenityId,
+      date
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error booking amenity:', error);
+    throw error;
+  }
+};
+
+export const cancelAmenityBooking = async (bookingId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/amenities/bookings/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error cancelling amenity booking:', error);
+    throw error;
+  }
 };
 
 // Announcements API

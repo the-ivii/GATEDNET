@@ -11,6 +11,7 @@ const useStore = create((set, get) => ({
   activePolls: [],
   maintenanceUpdates: [],
   notifications: [],
+  amenities: [],
   amenityBookings: [],
   announcements: [],
   
@@ -19,6 +20,8 @@ const useStore = create((set, get) => ({
   activeAmenityModal: false,
   isLoading: false,
   error: null,
+  isLoadingAmenities: false,
+  amenityError: null,
   
   // Actions
   // Action: Handles user login and authentication
@@ -54,6 +57,7 @@ const useStore = create((set, get) => ({
       activePolls: [],
       maintenanceUpdates: [],
       notifications: [],
+      amenities: [],
       amenityBookings: [],
       announcements: [],
     });
@@ -156,16 +160,51 @@ const useStore = create((set, get) => ({
     }
   },
   
-  fetchAmenityBookings: async () => {
-    set({ isLoading: true, error: null });
+  fetchAmenities: async () => {
     try {
-      const bookings = await api.getAmenities(); // getAmenities returns bookings from backend
-      set({ amenityBookings: bookings || [], isLoading: false });
+      set({ isLoadingAmenities: true, amenityError: null });
+      console.log('Attempting to fetch amenities...');
+      const amenities = await api.fetchAmenities();
+      console.log('Amenities fetched:', amenities);
+      set({ amenities, isLoadingAmenities: false });
     } catch (error) {
-      set({
-        error: error.response?.data?.message || error.message || 'Failed to fetch amenity bookings',
-        isLoading: false,
-      });
+      console.error('Error fetching amenities in store:', error);
+      set({ amenityError: error.message, isLoadingAmenities: false });
+      throw error;
+    }
+  },
+  
+  checkAmenityAvailability: async (amenityId, date) => {
+    try {
+      const availability = await api.checkAmenityAvailability(amenityId, date);
+      return availability;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  bookAmenity: async (amenityId, date) => {
+    try {
+      const booking = await api.bookAmenity(amenityId, date);
+      // Update the bookings list
+      set(state => ({
+        amenityBookings: [...state.amenityBookings, booking]
+      }));
+      return booking;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  cancelAmenityBooking: async (bookingId) => {
+    try {
+      await api.cancelAmenityBooking(bookingId);
+      // Remove the cancelled booking from the list
+      set(state => ({
+        amenityBookings: state.amenityBookings.filter(booking => booking.id !== bookingId)
+      }));
+    } catch (error) {
+      throw error;
     }
   },
   
