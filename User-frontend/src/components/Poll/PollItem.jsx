@@ -2,14 +2,17 @@ import React from 'react';
 import Card from '../UI/Card';
 import ProgressCircle from '../UI/ProgressCircle';
 
-const PollItem = ({ id, title, progress, onClick, className = "" }) => {
+const PollItem = ({ id, title, progress, onClick, className = "", isModal }) => {
+  if (isModal) {
+    console.log('Rendering PollItem in modal. Title:', title);
+  }
   return (
     <div className="mb-6 flex items-center">
       <div className="mr-4">
         <ProgressCircle progress={progress} />
       </div>
       <div 
-        className={`text-xl cursor-pointer hover:text-blue-300 transition-colors ${className}`}
+        className={`text-xl cursor-pointer hover:text-blue-300 transition-colors ${className} ${isModal ? 'text-gray-900 bg-yellow-200' : ''}`}
         onClick={() => onClick(id)}
       >
         {title}

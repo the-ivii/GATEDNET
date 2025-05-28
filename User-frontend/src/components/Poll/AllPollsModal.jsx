@@ -1,44 +1,51 @@
-import React from 'react';
-import Modal from '../UI/Modal';
+import React, { useEffect } from 'react';
+import { X } from 'lucide-react';
 import useStore from '../../store/useStore';
-import PollItem from './PollItem';
+import PollItem from '../Poll/PollItem'; // Assuming PollItem can be reused
 
-const AllPollsModal = ({ isOpen, onClose, onViewPoll }) => {
-  const { activePolls, isLoading, error } = useStore();
-  
-  const calculateProgress = (poll) => {
-    // Calculate progress based on actual vote count from backend
-    const totalVotes = poll.options.reduce((sum, option) => sum + (option.votes ? option.votes.length : 0), 0);
-    // Use the same placeholder as in ActivePolls for consistency
-    const placeholderTotal = 10; 
-    return Math.min(100, (totalVotes / placeholderTotal) * 100);
-  };
-  
+const AllPollsModal = ({ isOpen, onClose, onPollSelectForVoting }) => {
+  const { activePolls, fetchActivePolls, isLoading, error } = useStore();
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchActivePolls(); // Ensure all polls are fetched when modal opens
+    }
+  }, [isOpen, fetchActivePolls]);
+
+  if (!isOpen) return null;
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="ALL LIVE POLLS" width="lg">
-      <div className="space-y-6">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+        >
+          <X size={24} />
+        </button>
+        <h2 className="text-2xl font-bold mb-4 text-center">All Active Polls</h2>
+
         {isLoading ? (
           <div className="text-center py-4">Loading polls...</div>
         ) : error ? (
-          <div className="text-center py-4 text-red-600 bg-red-100 rounded">{error}</div>
+          <div className="text-center py-4 text-red-500">Error loading polls: {error}</div>
         ) : activePolls.length === 0 ? (
-          <div className="text-center py-4">No active polls at the moment</div>
+          <div className="text-center py-4">No active polls available.</div>
         ) : (
-          activePolls.map(poll => (
-            <PollItem
-              key={poll._id || poll.id}
-              id={poll._id || poll.id}
-              title={poll.title || poll.question}
-              progress={calculateProgress(poll)}
-              onClick={() => {
-                onViewPoll(poll._id || poll.id);
-                onClose(); // Close the AllPollsModal when viewing a single poll
-              }}
-            />
-          ))
+          <div className="space-y-4">
+            {activePolls.map(poll => (
+              <div 
+                key={poll.id} 
+                onClick={() => onPollSelectForVoting(poll)}
+                className="cursor-pointer hover:bg-gray-100 p-3 rounded-lg transition-colors text-gray-900"
+              >
+                <PollItem poll={poll} isModal={true} />
+              </div>
+            ))}
+          </div>
         )}
       </div>
-    </Modal>
+    </div>
   );
 };
 
