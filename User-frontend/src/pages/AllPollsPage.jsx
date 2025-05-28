@@ -101,8 +101,8 @@ const AllPollsPage = () => {
           };
 
           return (
-            <div key={poll._id} className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-xl font-bold text-navy-900 mb-4">{poll.title}</h3>
+            <div key={poll._id || poll.id} className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-xl font-bold mb-4">{poll.title || poll.question}</h3>
               
               {/* Display chart */}
               {totalVotes > 0 ? (

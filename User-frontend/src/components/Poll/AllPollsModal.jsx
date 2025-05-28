@@ -28,7 +28,7 @@ const AllPollsModal = ({ isOpen, onClose, onViewPoll }) => {
             <PollItem
               key={poll._id || poll.id}
               id={poll._id || poll.id}
-              title={poll.title}
+              title={poll.title || poll.question}
               progress={calculateProgress(poll)}
               onClick={() => {
                 onViewPoll(poll._id || poll.id);
