@@ -5,6 +5,8 @@ const Announcement = require('../models/Announcement');
 const Maintenance = require('../models/Maintenance');
 const Reminder = require('../models/Reminder');
 const Poll = require('../models/Poll');
+const Amenity = require('../models/Amenity');
+const AmenityBooking = require('../models/AmenityBooking');
 
 // Polls endpoint - fetch active polls
 router.get('/polls', async (req, res) => {
@@ -19,8 +21,37 @@ router.get('/polls', async (req, res) => {
   }
 });
 
-// Placeholder GET endpoints for frontend integration
-router.get('/amenities', (req, res) => res.json([]));
+// GET all amenities
+router.get('/amenities', async (req, res) => {
+  try {
+    const amenities = await Amenity.find({});
+    res.json(amenities);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching amenities' });
+  }
+});
+
+// POST create new amenity
+router.post('/amenities', async (req, res) => {
+  try {
+    const { name, description } = req.body;
+    const amenity = new Amenity({ name, description });
+    await amenity.save();
+    res.status(201).json(amenity);
+  } catch (err) {
+    res.status(400).json({ message: 'Error creating amenity' });
+  }
+});
+
+// DELETE amenity by ID
+router.delete('/amenities/:id', async (req, res) => {
+  try {
+    await Amenity.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Amenity deleted' });
+  } catch (err) {
+    res.status(400).json({ message: 'Error deleting amenity' });
+  }
+});
 
 // Announcements endpoint - fetch from announcements collection
 router.get('/announcements', async (req, res) => {
@@ -102,6 +133,32 @@ router.post('/login', async (req, res) => {
   const member = await Member.findOne({ email, flat });
   if (!member) return res.status(401).json({ message: 'Invalid credentials' });
   res.json({ message: 'Login successful', member });
+});
+
+// POST book an amenity
+router.post('/amenity-bookings', async (req, res) => {
+  try {
+    const { amenityId, date, memberId } = req.body;
+    if (!amenityId || !date || !memberId) {
+      return res.status(400).json({ message: 'amenityId, date, and memberId are required' });
+    }
+    // Find the amenity
+    const amenity = await Amenity.findById(amenityId);
+    if (!amenity) {
+      return res.status(404).json({ message: 'Amenity not found' });
+    }
+    // Create the booking
+    const booking = new AmenityBooking({
+      amenity: amenity.name,
+      date,
+      member: memberId,
+      status: 'booked'
+    });
+    await booking.save();
+    res.status(201).json(booking);
+  } catch (err) {
+    res.status(400).json({ message: 'Error booking amenity', error: err.message });
+  }
 });
 
 // TODO: Add routes for polls, voting, announcements, reminders, maintenances, amenities, and booking

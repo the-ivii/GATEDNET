@@ -146,92 +146,83 @@ const AmenityBookingModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+      <div className="bg-navy-900 rounded-3xl p-0 w-full max-w-xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800 flex flex-col justify-center items-center min-h-[600px]">
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-6 left-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
         >
-          <X size={24} />
+          <X size={32} />
         </button>
-        <h2 className="text-2xl font-bold mb-6 text-center">BOOK AMENITIES</h2>
+        <div className="flex flex-col justify-center items-center w-full h-full px-10 py-10">
+          <h2 className="text-3xl font-extrabold text-white text-center mb-10 tracking-wide">BOOK AMENITIES</h2>
 
-        {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Amenity:</label>
-          {isLoadingAmenities ? (
-            <p className="text-gray-500">Loading amenities...</p>
-          ) : ( amenities.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {amenities.map(amenity => (
-                <span
-                  key={amenity.id}
-                  className={`px-3 py-1 rounded-full cursor-pointer text-sm font-semibold ${
-                    selectedAmenityId === amenity.id
-                      ? 'bg-blue-200 text-blue-800'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                  onClick={() => setSelectedAmenityId(amenity.id)}
-                >
-                  {amenity.name}
-                </span>
-              ))}
+          {error && (
+            <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center w-full">
+              {error}
             </div>
-          ) : (
-            <p className="text-gray-500">No amenities available.</p>
-          ))}
-        </div>
+          )}
 
-        {selectedAmenity && (
-          <div className="mb-4 flex items-center">
-            <label className="block text-sm font-medium text-gray-700 mr-2">Book Amenity:</label>
-            <span className="px-3 py-1 rounded-full bg-blue-200 text-blue-800 text-sm font-semibold">
-              {selectedAmenity.name}
+          <div className="mb-6 w-full flex flex-col items-center">
+            <label className="block text-lg font-semibold text-blue-100 mb-2 self-start">Select Amenity:</label>
+            {isLoadingAmenities ? (
+              <p className="text-blue-200 self-start">Loading amenities...</p>
+            ) : ( amenities.length > 0 ? (
+              <select
+                className="w-full p-4 rounded-xl bg-navy-800 text-white border border-navy-700 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={selectedAmenityId || ''}
+                onChange={e => setSelectedAmenityId(e.target.value)}
+              >
+                <option value="" disabled>Select an amenity</option>
+                {amenities.map(amenity => (
+                  <option key={amenity._id} value={amenity._id}>{amenity.name}</option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-blue-200 self-start">No amenities available.</p>
+            ))}
+          </div>
+
+          <div className="mb-6 w-full flex flex-col items-center">
+            <label className="block text-lg font-semibold text-blue-100 mb-2 self-start">Select Date:</label>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              className="mt-1 block w-full border border-navy-700 rounded-xl shadow-sm p-4 bg-navy-800 text-white text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              minDate={new Date()}
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="mb-8 text-center text-xl font-bold flex items-center justify-center text-white w-full">
+            Status:
+            <span className={`ml-3 px-4 py-2 rounded-full text-base font-semibold bg-navy-800 text-blue-200 border border-navy-700`}>
+              {isLoading ? '...' : availabilityStatus}
             </span>
           </div>
-        )}
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Date:</label>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            minDate={new Date()}
-            disabled={isLoading}
-          />
-        </div>
-
-        <div className="mb-4 text-center text-lg font-semibold flex items-center justify-center">
-          Status: 
-          <span className={`ml-2 px-3 py-1 rounded-full text-sm font-semibold ${getStatusBadgeClasses()}`}>
-            {isLoading ? '...' : availabilityStatus}
-          </span>
-        </div>
-
-        <div className="flex justify-around mt-6">
-          {selectedAmenityId && selectedDate && availabilityStatus === 'Available' && (
+          <div className="flex flex-col w-full gap-4 items-center justify-center mt-6">
             <button
               onClick={handleBookAmenity}
-              className="bg-gray-800 text-white py-2 px-6 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 font-bold"
-              disabled={isLoading}
+              className="w-full py-4 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50"
+              disabled={
+                isLoading ||
+                !selectedAmenityId ||
+                !selectedDate ||
+                availabilityStatus !== 'Available'
+              }
             >
               BOOK NOW
             </button>
-          )}
-          {selectedAmenityId && selectedDate && availabilityStatus === 'Already Booked by You' && (
-            <button
-              onClick={handleCancelBooking}
-              className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition-colors disabled:opacity-50"
-              disabled={isLoading}
-            >
-              Cancel Booking
-            </button>
-          )}
+            {selectedAmenityId && selectedDate && availabilityStatus === 'Already Booked by You' && (
+              <button
+                onClick={handleCancelBooking}
+                className="w-full py-4 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-red-500 to-red-600 shadow-lg hover:from-red-600 hover:to-red-700 transition-all ml-2"
+                disabled={isLoading}
+              >
+                Cancel Booking
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
