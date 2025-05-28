@@ -27,7 +27,7 @@
 .react-datepicker__day--selected,
 .react-datepicker__day--keyboard-selected {
   background: linear-gradient(to right, #3b82f6, #2563eb) !important; /* blue-500 to blue-600 */
-  color: #fff !important;
+  color: #ffffff !important;
   border-radius: 0.5rem !important;
 }
 .react-datepicker__day--today {
