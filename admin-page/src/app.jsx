@@ -27,18 +27,11 @@ import PollResults from './pages/PollResults';
 import BookedAmenities from './components/BookedAmenities';
 import ViewBookedAmenities from './pages/ViewBookedAmenities';
 
-// 🔔 Reminder Feature
-import AddReminder from './pages/AddReminder';
-import Reminder from './components/Reminders';
-
 // 🛠️ Maintenance Feature
 import MaintenanceUpdates from './pages/MaintenanceUpdates'; // main page with buttons
 import AddTask from './pages/AddTask';
 import UpdateTask from './pages/UpdateTask';
 import ViewTasks from './pages/ViewTasks';
-
-// 📋 Task Management
-import Tasks from './pages/Tasks';
 
 // Seed demo data for Bookings and Tasks if not present
 const seedDemoData = () => {
@@ -186,18 +179,6 @@ const App = () => {
                   </RequireAuth>
                 } />
 
-                {/* 🔔 Reminders */}
-                <Route path="/reminders" element={
-                  <RequireAuth>
-                    <Reminder />
-                  </RequireAuth>
-                } />
-                <Route path="/add-reminder" element={
-                  <RequireAuth>
-                    <AddReminder />
-                  </RequireAuth>
-                } />
-
                 {/* 🛠️ Maintenance Updates */}
                 <Route path="/maintenance-updates" element={
                   <RequireAuth>
@@ -217,13 +198,6 @@ const App = () => {
                 <Route path="/maintenance-updates/view-tasks" element={
                   <RequireAuth>
                     <ViewTasks />
-                  </RequireAuth>
-                } />
-
-                {/* 📋 Task Management */}
-                <Route path="/tasks" element={
-                  <RequireAuth>
-                    <Tasks />
                   </RequireAuth>
                 } />
               </Routes>
