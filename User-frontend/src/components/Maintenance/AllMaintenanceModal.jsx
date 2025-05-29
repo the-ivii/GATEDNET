@@ -34,12 +34,26 @@ const AllMaintenanceModal = ({ isOpen, onClose }) => {
           <div className="space-y-4">
             {maintenanceUpdates.map(update => (
               <div 
-                key={update.id} // Assuming updates have an id
-                className="py-2"
+                key={update.id || update._id}
+                className="py-2 flex items-center justify-between"
               >
-                <h3 className="text-lg font-bold text-white leading-tight">{update.title}</h3> {/* Assuming title field */}
-                <p className="text-gray-400 mt-1 leading-tight">{update.description}</p> {/* Assuming description field */}
-                <p className="text-xs text-gray-500 mt-1 leading-tight">Date: {new Date(update.date).toLocaleDateString()}</p> {/* Assuming date field */}
+                <div>
+                  <h3 className="text-lg font-bold text-white leading-tight">{update.title}</h3>
+                  <p className="text-gray-400 mt-1 leading-tight">{update.description}</p>
+                </div>
+                <div>
+                  {update.status && (
+                    update.status === 'pending' ? (
+                      <span className="px-3 py-1 bg-yellow-400 text-yellow-900 font-medium rounded-xl text-xs">PENDING</span>
+                    ) : update.status === 'in-progress' ? (
+                      <span className="px-3 py-1 bg-blue-400 text-blue-900 font-medium rounded-xl text-xs">IN PROGRESS</span>
+                    ) : update.status === 'completed' ? (
+                      <span className="px-3 py-1 bg-green-400 text-green-900 font-medium rounded-xl text-xs">COMPLETED</span>
+                    ) : (
+                      <span className="px-3 py-1 bg-gray-300 text-gray-800 font-medium rounded-xl text-xs">{update.status.toUpperCase()}</span>
+                    )
+                  )}
+                </div>
               </div>
             ))}
           </div>
