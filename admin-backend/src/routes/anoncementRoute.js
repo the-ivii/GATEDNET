@@ -7,10 +7,10 @@ const {
   updateAnnouncement,
   deleteAnnouncement
 } = require('../controllers/AnouncementController');
-const { firebaseAuth } = require('../middleware/firebaseAuth');
+// const { firebaseAuth } = require('../middleware/firebaseAuth'); // Removed Firebase auth middleware import
 
-// Apply Firebase authentication middleware to all routes
-router.use(firebaseAuth);
+// *** Removed Firebase authentication middleware application ***
+// router.use(firebaseAuth);
 
 // Announcement routes
 router.post('/add', addAnnouncement);
