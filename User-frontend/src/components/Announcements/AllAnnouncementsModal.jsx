@@ -35,15 +35,12 @@ const AllAnnouncementsModal = ({ isOpen, onClose }) => {
             {announcements.map(announcement => (
               <div 
                 key={announcement.id}
-                className="bg-navy-800 rounded-2xl p-6 flex flex-col gap-2 shadow border border-navy-700"
+                className="py-2"
               >
-                <div className="flex items-start">
-                  <div className="w-4 h-4 mt-2 mr-4 rounded-full bg-blue-400 flex-shrink-0 shadow-lg" />
-                  <div>
-                    <h3 className="text-lg font-bold text-white mb-1">{announcement.title}</h3>
-                    <p className="text-blue-200 mb-1">{announcement.message}</p>
-                    <p className="text-xs text-blue-300 mb-2">Date: {new Date(announcement.date).toLocaleDateString()}</p>
-                  </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white leading-tight">{announcement.title}</h3>
+                  <p className="text-gray-400 mt-1 leading-tight">{announcement.message}</p>
+                  <p className="text-xs text-gray-500 mt-1 leading-tight">Date: {new Date(announcement.date).toLocaleDateString()}</p>
                 </div>
               </div>
             ))}

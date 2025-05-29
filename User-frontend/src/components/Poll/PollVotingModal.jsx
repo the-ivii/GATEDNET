@@ -30,7 +30,7 @@ const PollVotingModal = ({ isOpen, onClose, poll }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-md mx-auto flex flex-col items-center justify-center shadow-2xl border border-navy-800">
+      <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-md mx-auto flex flex-col items-center justify-center shadow-2xl border border-navy-800 relative">
         <button
           onClick={() => onClose(false)}
           className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"

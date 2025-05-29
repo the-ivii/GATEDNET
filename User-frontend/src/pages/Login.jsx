@@ -70,9 +70,9 @@ const Login = () => {
             </div>
             
             <div className="mt-4 text-center text-sm text-gray-500">
-              <p>For demo, use:</p>
-              <p>Email: demo@example.com</p>
-              <p>Password: password</p>
+              <p>Welcome to the Greenland Society GatedNet</p>
+              <p>Your one stop destination</p>
+              <p>for effective community management</p>
             </div>
           </form>
         </div>

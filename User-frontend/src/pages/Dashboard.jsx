@@ -56,11 +56,10 @@ const Dashboard = () => {
   const handleSidebarItemClick = (item) => {
     switch (item) {
       case 'voting':
-        setShowPollsModal(true);
+        setIsAllPollsModalOpen(true);
         break;
       case 'maintenance':
         setIsAllMaintenanceModalOpen(true);
-        setShowMaintenanceModal(false);
         break;
       case 'amenities':
         setIsAmenityBookingModalOpen(true);
@@ -73,11 +72,9 @@ const Dashboard = () => {
         break;
       case 'notifications':
         setIsAllNotificationsModalOpen(true);
-        setShowNotificationsModal(false);
         break;
       case 'announcements':
         setIsAllAnnouncementsModalOpen(true);
-        setShowAnnouncementsModal(false);
         break;
       default:
         setActiveItem(item);
@@ -139,7 +136,7 @@ const Dashboard = () => {
           {/* Left Column - 2/3 width on medium+ screens */}
           <div className="md:col-span-2 space-y-6 flex flex-col">
             {/* Active Polls (Top Left) */}
-            <ActivePolls onPollSelect={handlePollSelectForVoting} />
+            <ActivePolls onPollSelect={handlePollSelectForVoting} onSeeAllClick={() => setIsAllPollsModalOpen(true)} />
 
             {/* Bottom Left Row - Split into 2 columns on medium screens and above */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
@@ -147,14 +144,14 @@ const Dashboard = () => {
               <BookedAmenities onBookAmenity={handleBookNewAmenityClick} />
 
               {/* Announcements (Bottom Left - 2) */}
-              <Announcements />
+              <Announcements onFooterClick={() => setIsAllAnnouncementsModalOpen(true)} />
             </div>
           </div>
 
           {/* Right Column - 1/3 width on medium+ screens */}
           <div className="space-y-6 flex flex-col">
             {/* Maintenance Updates (Top Right) */}
-            <MaintenanceUpdates />
+            <MaintenanceUpdates onSeeAllClick={() => setIsAllMaintenanceModalOpen(true)} />
 
             {/* Notifications (Bottom Right) */}
             <Notifications />
@@ -167,28 +164,6 @@ const Dashboard = () => {
         isOpen={showSettingsModal}
         onClose={() => setShowSettingsModal(false)}
       />
-
-      {/* Original Modals (triggered by card footers and now sidebar for Polls) */}
-      {showPollsModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-navy-900 rounded-3xl p-0 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800 flex flex-col items-center justify-center">
-            <button
-              onClick={() => setShowPollsModal(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="w-full flex flex-col items-center justify-center px-8 py-8">
-              <h2 className="text-3xl font-extrabold text-blue-400 mb-8 tracking-wide w-full text-left">All Live Polls</h2>
-              <div className="w-full">
-                <ActivePolls isModal={true} onPollSelect={handlePollSelectForVoting} />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Individual Poll Voting Modal */}
       {selectedPollForVoting && (
@@ -209,50 +184,6 @@ const Dashboard = () => {
         isOpen={isAmenityBookingModalOpen}
         onClose={handleCloseAmenityBookingModal}
       />
-
-      {/* Maintenance Updates Modal */}
-      {showMaintenanceModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                All Maintenance Updates
-              </h2>
-              <button
-                onClick={() => setShowMaintenanceModal(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors p-2 hover:bg-gray-100 rounded-full"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <MaintenanceUpdates isModal={true} />
-          </div>
-        </div>
-      )}
-
-      {/* Amenities Modal (for listing all booked amenities, triggered by footer) */}
-      {showAmenitiesModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                All Booked Amenities
-              </h2>
-              <button
-                onClick={() => setShowAmenitiesModal(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors p-2 hover:bg-gray-100 rounded-full"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <BookedAmenities isModal={true} onBookAmenity={handleBookNewAmenityClick} />
-          </div>
-        </div>
-      )}
 
       {/* Notifications Modal */}
       {showNotificationsModal && (
@@ -276,16 +207,22 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Announcements Modal */}
-      {showAnnouncementsModal && (
+      {/* All Maintenance Updates Modal */}
+      <AllMaintenanceModal
+        isOpen={isAllMaintenanceModalOpen}
+        onClose={handleCloseAllMaintenanceModal}
+      />
+
+      {/* Amenities Modal (for listing all booked amenities, triggered by footer) */}
+      {showAmenitiesModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                All Announcements
+                All Amenities
               </h2>
               <button
-                onClick={() => setShowAnnouncementsModal(false)}
+                onClick={() => setShowAmenitiesModal(false)}
                 className="text-gray-500 hover:text-gray-700 transition-colors p-2 hover:bg-gray-100 rounded-full"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -293,25 +230,28 @@ const Dashboard = () => {
                 </svg>
               </button>
             </div>
-            <Announcements isModal={true} />
+            <BookedAmenities isModal={true} />
           </div>
         </div>
       )}
 
-      {/* New List Modals (triggered by sidebar clicks) */}
-      <AllMaintenanceModal
-        isOpen={isAllMaintenanceModalOpen}
-        onClose={handleCloseAllMaintenanceModal}
-      />
-
+      {/* All Notifications Modal */}
       <AllNotificationsModal
         isOpen={isAllNotificationsModalOpen}
         onClose={handleCloseAllNotificationsModal}
       />
 
+      {/* All Announcements Modal */}
       <AllAnnouncementsModal
         isOpen={isAllAnnouncementsModalOpen}
         onClose={handleCloseAllAnnouncementsModal}
+      />
+
+      {/* All Polls Modal */}
+      <AllPollsModal
+        isOpen={isAllPollsModalOpen}
+        onClose={() => setIsAllPollsModalOpen(false)}
+        onPollSelectForVoting={handlePollSelectForVoting}
       />
     </div>
   );

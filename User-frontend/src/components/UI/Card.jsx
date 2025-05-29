@@ -3,7 +3,7 @@ import React from 'react';
 const Card = ({ title, children, footer, onClick, onFooterClick }) => {
   return (
     <div 
-      className={`bg-navy-900 rounded-2xl overflow-hidden shadow-xl mb-6 text-white border border-navy-800 ${onClick ? 'cursor-pointer hover:shadow-2xl transition-shadow' : ''}`}
+      className={`bg-navy-900 rounded-2xl overflow-hidden shadow-xl mb-6 text-white border border-navy-800 flex flex-col ${onClick ? 'cursor-pointer hover:shadow-2xl transition-shadow' : ''}`}
       onClick={onClick}
     >
       {title && (
@@ -12,7 +12,7 @@ const Card = ({ title, children, footer, onClick, onFooterClick }) => {
         </div>
       )}
       
-      <div className="p-5">
+      <div className="p-5 flex-grow">
         {children}
       </div>
       

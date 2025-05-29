@@ -146,14 +146,14 @@ const AmenityBookingModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-navy-900 rounded-3xl p-0 w-full max-w-xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800 flex flex-col justify-center items-center min-h-[600px]">
+      <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800 flex flex-col min-h-[600px]">
         <button
           onClick={onClose}
-          className="absolute top-6 left-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
+          className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
         >
           <X size={32} />
         </button>
-        <div className="flex flex-col justify-center items-center w-full h-full px-10 py-10">
+        <div className="flex flex-col w-full h-full px-0 py-0">
           <h2 className="text-3xl font-extrabold text-white text-center mb-10 tracking-wide">BOOK AMENITIES</h2>
 
           {error && (
@@ -162,10 +162,10 @@ const AmenityBookingModal = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          <div className="mb-6 w-full flex flex-col items-center">
+          <div className="mb-6 w-full flex flex-col items-start">
             <label className="block text-lg font-semibold text-blue-100 mb-2 self-start">Select Amenity:</label>
             {isLoadingAmenities ? (
-              <p className="text-blue-200 self-start">Loading amenities...</p>
+              <p className="text-blue-200">Loading amenities...</p>
             ) : ( amenities.length > 0 ? (
               <select
                 className="w-full p-4 rounded-xl bg-navy-800 text-white border border-navy-700 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -182,7 +182,7 @@ const AmenityBookingModal = ({ isOpen, onClose }) => {
             ))}
           </div>
 
-          <div className="mb-6 w-full flex flex-col items-center">
+          <div className="mb-6 w-full flex flex-col items-start">
             <label className="block text-lg font-semibold text-blue-100 mb-2 self-start">Select Date:</label>
             <DatePicker
               selected={selectedDate}
@@ -193,14 +193,14 @@ const AmenityBookingModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          <div className="mb-8 text-center text-xl font-bold flex items-center justify-center text-white w-full">
+          <div className="mb-8 text-xl font-bold flex items-center text-white w-full">
             Status:
             <span className={`ml-3 px-4 py-2 rounded-full text-base font-semibold bg-navy-800 text-blue-200 border border-navy-700`}>
               {isLoading ? '...' : availabilityStatus}
             </span>
           </div>
 
-          <div className="flex flex-col w-full gap-4 items-center justify-center mt-6">
+          <div className="flex flex-col w-full gap-4 mt-6">
             <button
               onClick={handleBookAmenity}
               className="w-full py-4 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all disabled:opacity-50"
