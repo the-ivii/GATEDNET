@@ -77,10 +77,6 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 <label className="block text-sm font-medium text-gray-700">Email</label>
                 <p className="mt-1 text-gray-900">{user?.email || 'Loading email...'}</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Society Name</label>
-                <p className="mt-1 text-gray-900">Greenlands Society</p>
-              </div>
             </div>
           </div>
 

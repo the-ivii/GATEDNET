@@ -12,7 +12,7 @@ const PollItem = ({ id, title, progress, onClick, className = "", isModal }) => 
         <ProgressCircle progress={progress} />
       </div>
       <div 
-        className={`text-xl cursor-pointer hover:text-blue-300 transition-colors ${className} ${isModal ? 'text-gray-900 bg-yellow-200' : ''}`}
+        className={`text-xl cursor-pointer hover:text-blue-300 transition-colors ${isModal ? 'text-white' : 'text-white'} ${className}`}
         onClick={() => onClick(id)}
       >
         {title}

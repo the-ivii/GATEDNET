@@ -7,6 +7,7 @@ import BookedAmenities from '../components/Dashboard/BookedAmenities';
 import Announcements from '../components/Dashboard/Announcements';
 import SettingsModal from '../components/Settings/SettingsModal';
 import PollVotingModal from '../components/Poll/PollVotingModal';
+import PollModal from '../components/Poll/PollModal';
 import AmenityBookingModal from '../components/Amenities/AmenityBookingModal';
 import AllPollsModal from '../components/Poll/AllPollsModal';
 import AllMaintenanceModal from '../components/Maintenance/AllMaintenanceModal';
@@ -32,6 +33,9 @@ const Dashboard = () => {
   const [isAllMaintenanceModalOpen, setIsAllMaintenanceModalOpen] = useState(false);
   const [isAllNotificationsModalOpen, setIsAllNotificationsModalOpen] = useState(false);
   const [isAllAnnouncementsModalOpen, setIsAllAnnouncementsModalOpen] = useState(false);
+
+  const [showPollResults, setShowPollResults] = useState(false);
+  const [resultsPollId, setResultsPollId] = useState(null);
 
   const {
     fetchActivePolls,
@@ -85,9 +89,18 @@ const Dashboard = () => {
     setIsVotingModalOpen(true);
   };
 
-  const handleCloseVotingModal = () => {
+  const handleCloseVotingModal = (voted) => {
     setIsVotingModalOpen(false);
+    if (voted && selectedPollForVoting) {
+      setResultsPollId(selectedPollForVoting._id);
+      setShowPollResults(true);
+    }
     setSelectedPollForVoting(null);
+  };
+
+  const handleClosePollResults = () => {
+    setShowPollResults(false);
+    setResultsPollId(null);
   };
 
   const handleBookNewAmenityClick = () => {
@@ -158,21 +171,21 @@ const Dashboard = () => {
       {/* Original Modals (triggered by card footers and now sidebar for Polls) */}
       {showPollsModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                All Live Polls
-              </h2>
-              <button
-                onClick={() => setShowPollsModal(false)}
-                className="text-gray-500 hover:text-gray-700 transition-colors p-2 hover:bg-gray-100 rounded-full"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+          <div className="bg-navy-900 rounded-3xl p-0 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800 flex flex-col items-center justify-center">
+            <button
+              onClick={() => setShowPollsModal(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="w-full flex flex-col items-center justify-center px-8 py-8">
+              <h2 className="text-3xl font-extrabold text-blue-400 mb-8 tracking-wide w-full text-left">All Live Polls</h2>
+              <div className="w-full">
+                <ActivePolls isModal={true} onPollSelect={handlePollSelectForVoting} />
+              </div>
             </div>
-            <ActivePolls isModal={true} onPollSelect={handlePollSelectForVoting} />
           </div>
         </div>
       )}
@@ -181,9 +194,14 @@ const Dashboard = () => {
       {selectedPollForVoting && (
         <PollVotingModal
           isOpen={isVotingModalOpen}
-          onClose={handleCloseVotingModal}
+          onClose={(voted) => handleCloseVotingModal(voted)}
           poll={selectedPollForVoting}
         />
+      )}
+
+      {/* Poll Results Modal */}
+      {showPollResults && resultsPollId && (
+        <PollModal pollId={resultsPollId} onClose={handleClosePollResults} />
       )}
 
       {/* Amenity Booking Calendar Modal (New) */}
