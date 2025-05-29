@@ -1,28 +1,21 @@
 const admin = require('firebase-admin');
 
-// Get Firebase configuration from environment variables
+// Read Firebase credentials from environment variables
 const serviceAccount = {
-  type: "service_account",
-  project_id: process.env.FIREBASE_PROJECT_ID,
-  private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-  client_email: process.env.FIREBASE_CLIENT_EMAIL,
-  client_id: process.env.FIREBASE_CLIENT_ID,
-  auth_uri: "https://accounts.google.com/o/oauth2/auth",
-  token_uri: "https://oauth2.googleapis.com/token",
-  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
-  universe_domain: "googleapis.com"
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') : undefined,
 };
 
 // Validate service account
-if (!serviceAccount.project_id || !serviceAccount.private_key || !serviceAccount.client_email) {
+if (!serviceAccount.projectId || !serviceAccount.clientEmail || !serviceAccount.privateKey) {
   throw new Error('Invalid Firebase service account configuration');
 }
 
 console.log('Initializing Firebase Admin SDK with config:', {
-  projectId: serviceAccount.project_id,
-  clientEmail: serviceAccount.client_email,
-  hasPrivateKey: !!serviceAccount.private_key
+  projectId: serviceAccount.projectId,
+  clientEmail: serviceAccount.clientEmail,
+  hasPrivateKey: !!serviceAccount.privateKey
 });
 
 let firebaseApp;

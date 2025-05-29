@@ -6,7 +6,7 @@ const {
   getMemberById, 
   updateMember, 
   deleteMember 
-} = require('../controllers/MemberController');
+} = require('../controllers/memberController');
 const { firebaseAuth } = require('../middleware/firebaseAuth');
 
 // Apply Firebase authentication middleware to all routes

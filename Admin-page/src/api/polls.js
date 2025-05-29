@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Use port 7000 for backend
-const BASE_URL = 'http://localhost:7000';
+// Use deployed backend URL
+const BASE_URL = 'https://gatednet-51tu.onrender.com';
 
 // Helper to handle API errors
 const handleApiError = (error) => {
