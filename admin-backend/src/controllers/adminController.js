@@ -1,14 +1,14 @@
 const Admin = require('../models/Admin');
-const { admin, verifyFirebaseConnection } = require('../firebase');
+// const { admin, verifyFirebaseConnection } = require('../firebase'); // Keep admin if needed elsewhere, otherwise remove // Removed import
 
 // Admin sign in
 const adminSignIn = async (req, res) => {
     try {
-        // Verify Firebase connection first
-        const isFirebaseConnected = await verifyFirebaseConnection();
-        if (!isFirebaseConnected) {
-            return res.status(500).json({ error: 'Firebase service unavailable' });
-        }
+        // *** Removed Firebase connection verification ***
+        // const isFirebaseConnected = await verifyFirebaseConnection();
+        // if (!isFirebaseConnected) {
+        //     return res.status(500).json({ error: 'Firebase service unavailable' });
+        // }
 
         const { email, password, name, societyId, role } = req.body;
 
@@ -17,37 +17,40 @@ const adminSignIn = async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        // Check if admin already exists
+        // Check if admin already exists in DB
         const existingAdmin = await Admin.findOne({ email });
         if (existingAdmin) {
             return res.status(400).json({ error: 'Admin with this email already exists' });
         }
 
+        // *** Removed Firebase user creation and token generation ***
         // Create user in Firebase
-        const userRecord = await admin.auth().createUser({
-            email,
-            password,
-            emailVerified: false
-        });
-
+        // const userRecord = await admin.auth().createUser({
+        //     email,
+        //     password,
+        //     emailVerified: false
+        // });
         // Create custom token for the new user
-        const customToken = await admin.auth().createCustomToken(userRecord.uid, {
-            email: userRecord.email,
-            role: role || 'society_admin'
-        });
+        // const customToken = await admin.auth().createCustomToken(userRecord.uid, {
+        //     email: userRecord.email,
+        //     role: role || 'society_admin'
+        // });
 
-        // Create admin in database
+        // Create admin in database (assuming password is not stored in DB for now)
         const adminUser = new Admin({
             email,
             name,
             societyId,
             role: role || 'society_admin',
-            firebaseUid: userRecord.uid,
+            // firebaseUid: userRecord.uid, // Removed Firebase UID
             isActive: true,
             createdAt: new Date()
         });
 
         await adminUser.save();
+
+        // *** Return a placeholder token (INSECURE without proper auth) ***
+        const customToken = 'placeholder_token';
 
         res.status(201).json({
             message: 'Admin created successfully',
@@ -62,16 +65,16 @@ const adminSignIn = async (req, res) => {
     } catch (error) {
         console.error('Admin sign in error:', error);
         
-        // Handle Firebase errors
-        if (error.code === 'auth/email-already-exists') {
-            return res.status(400).json({ error: 'Email already exists' });
-        }
-        if (error.code === 'auth/weak-password') {
-            return res.status(400).json({ error: 'Password should be at least 6 characters' });
-        }
-        if (error.code === 'auth/invalid-email') {
-            return res.status(400).json({ error: 'Invalid email format' });
-        }
+        // *** Removed Firebase error handling ***
+        // if (error.code === 'auth/email-already-exists') {
+        //     return res.status(400).json({ error: 'Email already exists' });
+        // }
+        // if (error.code === 'auth/weak-password') {
+        //     return res.status(400).json({ error: 'Password should be at least 6 characters' });
+        // }
+        // if (error.code === 'auth/invalid-email') {
+        //     return res.status(400).json({ error: 'Invalid email format' });
+        // }
 
         // Handle database errors
         if (error.name === 'ValidationError') {
@@ -88,11 +91,11 @@ const adminSignIn = async (req, res) => {
 // Admin login
 const adminLogin = async (req, res) => {
     try {
-        // Verify Firebase connection first
-        const isFirebaseConnected = await verifyFirebaseConnection();
-        if (!isFirebaseConnected) {
-            return res.status(500).json({ error: 'Firebase service unavailable' });
-        }
+        // *** Removed Firebase connection verification ***
+        // const isFirebaseConnected = await verifyFirebaseConnection();
+        // if (!isFirebaseConnected) {
+        //     return res.status(500).json({ error: 'Firebase service unavailable' });
+        // }
 
         const { email, password } = req.body;
 
@@ -111,19 +114,21 @@ const adminLogin = async (req, res) => {
             return res.status(403).json({ error: 'Admin account is inactive' });
         }
 
+        // *** Removed Firebase authentication and token generation ***
         // Get the user from Firebase
-        const userRecord = await admin.auth().getUserByEmail(email);
-        
+        // const userRecord = await admin.auth().getUserByEmail(email);
         // Create custom token for the user
-        const customToken = await admin.auth().createCustomToken(userRecord.uid, {
-            email: userRecord.email,
-            role: adminUser.role,
-            adminId: adminUser._id.toString()
-        });
+        // const customToken = await admin.auth().createCustomToken(userRecord.uid, {
+        //     email: userRecord.email,
+        //     role: adminUser.role,
+        //     adminId: adminUser._id.toString()
+        // });
+        
+        // *** Generate a placeholder token (INSECURE without proper auth) ***
+        const customToken = 'placeholder_token';
 
-        console.log('Generated custom token for user:', {
-            uid: userRecord.uid,
-            email: userRecord.email,
+        console.log('Generated placeholder token for user:', {
+            email: adminUser.email,
             hasToken: !!customToken
         });
 
@@ -144,12 +149,13 @@ const adminLogin = async (req, res) => {
     } catch (error) {
         console.error('Admin login error:', error);
         
-        if (error.code === 'auth/user-not-found') {
-            return res.status(401).json({ error: 'Invalid email or password' });
-        }
-        if (error.code === 'auth/invalid-email') {
-            return res.status(400).json({ error: 'Invalid email format' });
-        }
+        // *** Removed Firebase error handling ***
+        // if (error.code === 'auth/user-not-found') {
+        //     return res.status(401).json({ error: 'Invalid email or password' });
+        // }
+        // if (error.code === 'auth/invalid-email') {
+        //     return res.status(400).json({ error: 'Invalid email format' });
+        // }
         
         res.status(500).json({ error: 'Error during login' });
     }
