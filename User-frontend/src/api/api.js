@@ -33,6 +33,11 @@ export const logout = () => {
   localStorage.removeItem('token');
 };
 
+export const updatePassword = async (currentPassword, newPassword) => {
+  const res = await api.post('/update-password', { currentPassword, newPassword });
+  return res.data;
+};
+
 // Polls API
 export const getActivePolls = async () => {
   const res = await api.get('/polls');
@@ -62,41 +67,65 @@ export const getNotifications = async () => {
 };
 
 // Amenities API
-export const getAmenities = async () => {
-  const res = await api.get('/amenities');
-  return res.data;
+export const fetchAmenities = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/amenities`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching amenities:', error);
+    throw error;
+  }
 };
 
 export const getAmenityBookings = async () => {
-  // Mocked response for demo
-  return [
-    {
-      id: '1',
-      amenityId: '1',
-      userId: '1',
-      date: '2025-04-22',
-      startTime: '10:00',
-      endTime: '12:00',
-      status: 'confirmed',
-    },
-  ];
+  const response = await api.get('/amenity-bookings');
+  return response.data;
 };
 
 export const checkAmenityAvailability = async (amenityId, date) => {
-  // In a real app, this would check with the backend
-  // For demo, return true for most dates except a few
-  const unavailableDates = ['2025-05-01', '2025-05-15', '2025-05-20'];
-  return !unavailableDates.includes(date);
+  try {
+    const response = await axios.get(`${API_URL}/amenities/${amenityId}/availability`, {
+      params: { date }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error checking amenity availability:', error);
+    throw error;
+  }
 };
 
-export const bookAmenity = async (amenity, date, memberId) => {
-  const res = await api.post('/book-amenity', { amenity, date, memberId });
-  return res.data;
+export const bookAmenity = async (amenityId, date, memberId) => {
+  try {
+    const response = await axios.post(`${API_URL}/amenity-bookings`, {
+      amenityId,
+      date,
+      memberId
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error booking amenity:', error);
+    throw error;
+  }
+};
+
+export const cancelAmenityBooking = async (bookingId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/amenities/bookings/${bookingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error cancelling amenity booking:', error);
+    throw error;
+  }
 };
 
 // Announcements API
 export const getAnnouncements = async () => {
-  const res = await api.get('/announcements');
+  const token = localStorage.getItem('token');
+  const res = await api.get('/announcements', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
   return res.data;
 };
 

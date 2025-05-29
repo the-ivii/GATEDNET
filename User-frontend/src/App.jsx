@@ -17,7 +17,7 @@ function App() {
   }, [isAuthenticated, fetchActivePolls, fetchMaintenanceUpdates, fetchNotifications]);
   
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-navy-950">
       {isAuthenticated ? <Dashboard /> : <Login />}
     </div>
   );

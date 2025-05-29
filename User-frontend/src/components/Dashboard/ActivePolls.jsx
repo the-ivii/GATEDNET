@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PollItem from '../Poll/PollItem';
 import Card from '../UI/Card';
 import useStore from '../../store/useStore';
 import { useNavigate } from 'react-router-dom';
+import { X } from 'lucide-react';
 
-const ActivePolls = ({ onViewPoll }) => {
-  const { activePolls, fetchActivePolls, isLoading, error } = useStore();
+const ActivePolls = ({ onViewPoll, onPollSelect, onSeeAllClick, isModal = false }) => {
+  const { activePolls, fetchActivePolls, isLoading, pollError } = useStore();
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -14,8 +15,8 @@ const ActivePolls = ({ onViewPoll }) => {
   }, [fetchActivePolls]);
 
   useEffect(() => {
-    console.log('ActivePolls state updated:', { activePolls, isLoading, error });
-  }, [activePolls, isLoading, error]);
+    console.log('ActivePolls state updated:', { activePolls, isLoading, pollError });
+  }, [activePolls, isLoading, pollError]);
   
   const calculateProgress = (poll) => {
     // Calculate progress based on actual vote count from backend
@@ -26,33 +27,42 @@ const ActivePolls = ({ onViewPoll }) => {
     const placeholderTotal = 10; // Example: show progress relative to 10 votes
     return Math.min(100, (totalVotes / placeholderTotal) * 100);
   };
+
+  const renderPollList = (polls, isModal = false) => (
+    <div>
+      {polls.map(poll => (
+        <PollItem
+          key={poll._id || poll.id}
+          id={poll._id || poll.id}
+          title={poll.title || poll.question}
+          progress={calculateProgress(poll)}
+          onClick={() => onPollSelect(poll)}
+          className={isModal ? "text-white" : "text-white"}
+        />
+      ))}
+    </div>
+  );
   
   return (
-    <Card 
-      title="ACTIVE VOTES"
-      footer={<span>SEE ALL LIVE POLLS</span>}
-      onFooterClick={() => navigate('/user/polls')}
-    >
-      {isLoading ? (
-        <div className="text-center py-4">Loading polls...</div>
-      ) : error ? (
-         <div className="text-center py-4 text-red-600 bg-red-100 rounded">{error}</div>
-      ) : activePolls.length === 0 ? (
-        <div className="text-center py-4">No active polls at the moment</div>
-      ) : (
-        <div>
-          {activePolls.map(poll => (
-            <PollItem
-              key={poll._id || poll.id}
-              id={poll._id || poll.id}
-              title={poll.title || poll.question}
-              progress={calculateProgress(poll)}
-              onClick={() => onViewPoll(poll._id || poll.id)}
-            />
-          ))}
-        </div>
+    <>
+      {!isModal && (
+        <Card 
+          title="ACTIVE VOTES"
+          footer={<span>SEE ALL LIVE POLLS</span>}
+          onFooterClick={onSeeAllClick}
+        >
+          {isLoading ? (
+            <div className="text-center py-4">Loading polls...</div>
+          ) : pollError ? (
+            <div className="text-center py-4 text-red-600 bg-red-100 rounded">{pollError}</div>
+          ) : activePolls.length === 0 ? (
+            <div className="text-center py-4">No active polls at the moment</div>
+          ) : (
+            renderPollList(activePolls.slice(0, 2))
+          )}
+        </Card>
       )}
-    </Card>
+    </>
   );
 };
 

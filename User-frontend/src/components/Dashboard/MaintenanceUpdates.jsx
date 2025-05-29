@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import Card from '../UI/Card';
 import useStore from '../../store/useStore';
+import { X } from 'lucide-react';
 
-const MaintenanceUpdates = () => {
+const MaintenanceUpdates = ({ onSeeAllClick }) => {
   const { maintenanceUpdates, fetchMaintenanceUpdates, isLoading, error } = useStore();
   
   useEffect(() => {
@@ -38,29 +39,36 @@ const MaintenanceUpdates = () => {
         );
     }
   };
+
+  const renderUpdatesList = (updates) => (
+    <div className="space-y-4">
+      {updates.map(update => (
+        <div key={update._id || update.id} className="flex justify-between items-center">
+          <div className="text-lg">{update.title}</div>
+          <div>{getStatusBadge(update.status)}</div>
+        </div>
+      ))}
+    </div>
+  );
   
   return (
-    <Card 
-      title="MAINTENANCE UPDATES"
-      footer={<span>SEE ALL UPDATES</span>}
-    >
-      {isLoading ? (
-        <div className="text-center py-4">Loading updates...</div>
-      ) : error ? (
-        <div className="text-center py-4 text-red-600 bg-red-100 rounded">{error}</div>
-      ) : maintenanceUpdates.length === 0 ? (
-        <div className="text-center py-4">No maintenance updates</div>
-      ) : (
-        <div className="space-y-4">
-          {maintenanceUpdates.map(update => (
-            <div key={update._id || update.id} className="flex justify-between items-center">
-              <div className="text-lg">{update.title}</div>
-              <div>{getStatusBadge(update.status)}</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </Card>
+    <>
+      <Card 
+        title="MAINTENANCE UPDATES"
+        footer={<span>SEE ALL UPDATES</span>}
+        onFooterClick={onSeeAllClick}
+      >
+        {isLoading ? (
+          <div className="text-center py-4">Loading updates...</div>
+        ) : error ? (
+          <div className="text-center py-4 text-red-600 bg-red-100 rounded">{error}</div>
+        ) : maintenanceUpdates.length === 0 ? (
+          <div className="text-center py-4">No maintenance updates</div>
+        ) : (
+          renderUpdatesList(maintenanceUpdates.slice(0, 2))
+        )}
+      </Card>
+    </>
   );
 };
 

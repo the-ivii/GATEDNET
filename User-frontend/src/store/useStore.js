@@ -11,6 +11,7 @@ const useStore = create((set, get) => ({
   activePolls: [],
   maintenanceUpdates: [],
   notifications: [],
+  amenities: [],
   amenityBookings: [],
   announcements: [],
   
@@ -19,6 +20,9 @@ const useStore = create((set, get) => ({
   activeAmenityModal: false,
   isLoading: false,
   error: null,
+  pollError: null,
+  isLoadingAmenities: false,
+  amenityError: null,
   
   // Actions
   // Action: Handles user login and authentication
@@ -28,12 +32,14 @@ const useStore = create((set, get) => ({
       const res = await api.login(email, flat);
       console.log('Login response:', res);
       const member = res.member;
+      // Explicitly add a mock email for testing purposes
+      const userWithEmail = { ...member, email: member.email || 'mockuser@example.com' };
       set({
-        user: member,
+        user: userWithEmail,
         isAuthenticated: true,
         isLoading: false,
       });
-      localStorage.setItem('user', JSON.stringify(member));
+      localStorage.setItem('user', JSON.stringify(userWithEmail));
       localStorage.setItem('token', 'mock-token'); // Optionally set a token if you implement JWT
     } catch (error) {
       console.error('Login error:', error.response?.data?.message || error.message || error);
@@ -52,9 +58,11 @@ const useStore = create((set, get) => ({
       activePolls: [],
       maintenanceUpdates: [],
       notifications: [],
+      amenities: [],
       amenityBookings: [],
       announcements: [],
     });
+    // No need to explicitly redirect here, the router should handle based on isAuthenticated state
   },
   
   updateUserSettings: async (settings) => {
@@ -72,14 +80,38 @@ const useStore = create((set, get) => ({
   updatePassword: async (currentPassword, newPassword) => {
     set({ isLoading: true, error: null });
     try {
+      await api.updatePassword(currentPassword, newPassword);
+      // After successful password update, log out the user
+      get().logout();
       set({ isLoading: false });
+      // Redirect to login page
+      window.location.href = '/login';
     } catch (error) {
-      set({ error: 'Failed to update password', isLoading: false });
+      set({ 
+        error: error.response?.data?.message || error.message || 'Failed to update password', 
+        isLoading: false 
+      });
+      throw error; // Re-throw to handle in the component
+    }
+  },
+  
+  // Action: Fetches full user details from backend
+  fetchUserDetails: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const user = await api.getUserProfile();
+      set({ user, isLoading: false });
+      localStorage.setItem('user', JSON.stringify(user));
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || error.message || 'Failed to fetch user details',
+        isLoading: false,
+      });
     }
   },
   
   fetchActivePolls: async () => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, pollError: null });
     try {
       const polls = await api.getActivePolls();
       console.log('Fetched polls in store:', polls);
@@ -87,7 +119,7 @@ const useStore = create((set, get) => ({
     } catch (error) {
       console.error('Error fetching polls in store:', error);
       set({
-        error: error.response?.data?.message || error.message || 'Failed to fetch polls',
+        pollError: error.response?.data?.message || error.message || 'Failed to fetch polls',
         isLoading: false,
       });
     }
@@ -119,16 +151,53 @@ const useStore = create((set, get) => ({
     }
   },
   
-  fetchAmenityBookings: async () => {
-    set({ isLoading: true, error: null });
+  fetchAmenities: async () => {
     try {
-      const bookings = await api.getAmenities(); // getAmenities returns bookings from backend
-      set({ amenityBookings: bookings || [], isLoading: false });
+      set({ isLoadingAmenities: true, amenityError: null });
+      console.log('Attempting to fetch amenities...');
+      const amenities = await api.fetchAmenities();
+      console.log('Amenities fetched:', amenities);
+      set({ amenities, isLoadingAmenities: false });
     } catch (error) {
-      set({
-        error: error.response?.data?.message || error.message || 'Failed to fetch amenity bookings',
-        isLoading: false,
-      });
+      console.error('Error fetching amenities in store:', error);
+      set({ amenityError: error.message, isLoadingAmenities: false });
+      throw error;
+    }
+  },
+  
+  checkAmenityAvailability: async (amenityId, date) => {
+    try {
+      const availability = await api.checkAmenityAvailability(amenityId, date);
+      return availability;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  bookAmenity: async (amenityId, date) => {
+    try {
+      const memberId = get().user?._id;
+      if (!memberId) throw new Error('User not logged in');
+      const booking = await api.bookAmenity(amenityId, date, memberId);
+      // Update the bookings list
+      set(state => ({
+        amenityBookings: [...state.amenityBookings, booking]
+      }));
+      return booking;
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  cancelAmenityBooking: async (bookingId) => {
+    try {
+      await api.cancelAmenityBooking(bookingId);
+      // Remove the cancelled booking from the list
+      set(state => ({
+        amenityBookings: state.amenityBookings.filter(booking => booking.id !== bookingId)
+      }));
+    } catch (error) {
+      throw error;
     }
   },
   
@@ -154,20 +223,37 @@ const useStore = create((set, get) => ({
   },
   
   castVote: async (pollId, optionIndex) => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, pollError: null });
     try {
       const memberId = get().user?._id;
       if (!memberId) {
-         throw new Error('User not logged in.');
+        throw new Error('User not logged in.');
       }
       const res = await api.castVote(pollId, optionIndex, memberId);
-      console.log('Vote cast response:', res.data);
-      await get().fetchActivePolls(); // Refresh polls after voting
-      set({ isLoading: false });
+      console.log('Vote cast response:', res);
+      // Refresh polls after voting
+      await get().fetchActivePolls();
+      set({ isLoading: false, pollError: null });
+      return res;
     } catch (error) {
-       console.error('Error casting vote in store:', error);
+      console.error('Error casting vote in store:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to cast vote';
       set({
-        error: error.response?.data?.message || error.message || 'Failed to cast vote',
+        pollError: errorMessage,
+        isLoading: false,
+      });
+      throw error; // Re-throw to handle in the component
+    }
+  },
+  
+  fetchAmenityBookings: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      const bookings = await api.getAmenityBookings();
+      set({ amenityBookings: bookings || [], isLoading: false });
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || error.message || 'Failed to fetch bookings',
         isLoading: false,
       });
     }

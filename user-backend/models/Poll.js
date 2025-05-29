@@ -5,9 +5,13 @@ const pollSchema = new mongoose.Schema({
   options: [
     {
       text: String,
-      votes: [{ member: { type: mongoose.Schema.Types.ObjectId, ref: 'Member' } }]
+      votes: {
+        type: Number,
+        default: 0
+      }
     }
   ],
+  voters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Member' }],
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
