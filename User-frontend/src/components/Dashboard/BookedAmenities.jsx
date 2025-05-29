@@ -10,7 +10,7 @@ const BookedAmenities = ({ onBookAmenity }) => {
   useEffect(() => {
     fetchAmenityBookings();
   }, [fetchAmenityBookings]);
-  
+
   const renderBookingsList = (bookings) => (
     <div className="space-y-2">
       {bookings.map(booking => (
@@ -66,12 +66,12 @@ const BookedAmenities = ({ onBookAmenity }) => {
                 ))
               )}
             </div>
-            <button
-              onClick={onBookAmenity}
+              <button
+                onClick={onBookAmenity}
               className="w-full py-4 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all"
-            >
-              Book New Amenity
-            </button>
+              >
+                Book New Amenity
+              </button>
           </div>
         </div>
       )}
