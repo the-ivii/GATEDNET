@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { adminLogin } from "../api/admin";
-import { getIdTokenFromCustomToken } from "../utils/auth";
+// import { getIdTokenFromCustomToken } from "../utils/auth"; // Removed Firebase auth import
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/auth.css";
 
@@ -40,21 +40,23 @@ export default function AdminLogin({ setIsAuthenticated }) {
         return;
       }
       
-      try {
-        console.log("Attempting to get ID token from custom token...");
-        const idToken = await getIdTokenFromCustomToken(res.token);
-        console.log("Successfully obtained ID token");
+      // *** Removed Firebase client-side token processing ***
+      // try {
+      //   console.log("Attempting to get ID token from custom token...");
+      //   const idToken = await getIdTokenFromCustomToken(res.token);
+      //   console.log("Successfully obtained ID token");
         
-        localStorage.setItem("admin_id_token", idToken);
+        // Use the token directly from the backend response
+        localStorage.setItem("admin_id_token", res.token);
         localStorage.setItem("admin_user", JSON.stringify(res.admin));
         
         setIsAuthenticated(true);
         console.log("Login successful, redirecting to dashboard...");
         navigate("/dashboard");
-      } catch (firebaseError) {
-        console.error("Firebase auth error:", firebaseError);
-        setError(firebaseError.message || "Authentication error. Please try again.");
-      }
+      // } catch (firebaseError) {
+      //   console.error("Firebase auth error:", firebaseError);
+      //   setError(firebaseError.message || "Authentication error. Please try again.");
+      // }
     } catch (error) {
       console.error("Login error:", error);
       setError(error.message || "Network error. Please check your connection and try again.");

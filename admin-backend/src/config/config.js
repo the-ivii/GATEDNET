@@ -16,10 +16,10 @@ if (fs.existsSync(envPath)) {
 dotenv.config({ path: envPath });
 
 // Debug: Log environment variables
-console.log('Environment Variables:');
-console.log('FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID);
-console.log('FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL);
-console.log('FIREBASE_PRIVATE_KEY:', process.env.FIREBASE_PRIVATE_KEY?.substring(0, 30), '...');
+// console.log('Environment Variables:');
+// console.log('FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID);
+// console.log('FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL);
+// console.log('FIREBASE_PRIVATE_KEY:', process.env.FIREBASE_PRIVATE_KEY?.substring(0, 30), '...');
 
 module.exports = {
   port: process.env.PORT || 7000,
@@ -37,7 +37,7 @@ module.exports = {
     pass: process.env.EMAIL_PASS
   },
   corsOptions: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: [process.env.CLIENT_URL, 'http://localhost:3000'].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
   }
