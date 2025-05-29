@@ -14,12 +14,11 @@ const Notifications = () => {
   const renderNotificationsList = (notifs) => (
     <div className="space-y-4">
       {notifs.map(notification => (
-        <div key={notification._id || notification.id} className="flex items-start bg-navy-800 rounded-2xl px-6 py-4 shadow border border-navy-700">
-          <div className="w-4 h-4 mt-2 mr-4 rounded-full bg-blue-400 flex-shrink-0 shadow-lg"></div>
+        <div key={notification._id || notification.id} className="py-2">
           <div>
-            <div className="text-lg font-bold text-white">{notification.title}</div>
+            <div className="text-lg font-bold text-white leading-tight">{notification.title}</div>
             {notification.description && (
-              <div className="text-sm text-blue-200 mt-1">{notification.description}</div>
+              <div className="text-sm text-gray-400 mt-1 leading-tight">{notification.description}</div>
             )}
           </div>
         </div>

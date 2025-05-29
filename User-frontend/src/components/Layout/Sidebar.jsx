@@ -12,7 +12,7 @@ const SidebarItem = ({ icon: Icon, label, isActive, onClick }) => (
     }`}
   >
     <Icon className="w-6 h-6" />
-    <span className="font-medium">{label}</span>
+    <span className="font-medium whitespace-nowrap">{label}</span>
   </button>
 );
 

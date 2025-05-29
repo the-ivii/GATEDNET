@@ -86,8 +86,8 @@ const PollModal = ({ pollId, onClose }) => {
   }
 
   return (
-    <Modal isOpen={!!pollId} onClose={onClose} title="Poll Results" width="lg">
-      <div className="p-6 bg-blue-950 rounded-2xl border-2 border-blue-500">
+    <Modal isOpen={!!pollId} onClose={onClose} title="Poll Results" width="lg" bgColorClass="bg-navy-900" titleColorClass="text-white">
+      <div className="p-6 rounded-2xl">
         {loading ? (
           <div className="text-center text-white py-8">Loading poll results...</div>
         ) : error ? (
@@ -100,15 +100,15 @@ const PollModal = ({ pollId, onClose }) => {
             </div>
             <div className="flex flex-col gap-2 mt-6">
               {results.results.map((opt, idx) => (
-                <div key={idx} className="flex justify-between items-center bg-blue-900 border-2 border-blue-500 rounded-lg px-4 py-2 text-white">
-                  <span className="font-semibold">{opt.text}</span>
-                  <span>{opt.votes} votes</span>
-                  <span className="font-bold text-blue-400">{opt.percentage}%</span>
+                <div key={idx} className="flex justify-between items-center bg-navy-800 border-2 border-navy-700 rounded-lg px-4 py-3 text-white">
+                  <span className="font-semibold text-lg">{opt.text}</span>
+                  <span className="text-gray-300 text-base">{opt.votes} votes</span>
+                  <span className="font-bold text-blue-400 text-lg">{opt.percentage}%</span>
                 </div>
               ))}
             </div>
             <div className="mt-8 flex justify-center">
-              <Button onClick={onClose}>Close</Button>
+              <Button onClick={onClose} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Close</Button>
             </div>
           </>
         ) : null}

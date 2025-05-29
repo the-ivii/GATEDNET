@@ -15,31 +15,31 @@ const AllMaintenanceModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+      <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
         >
-          <X size={24} />
+          <X size={32} />
         </button>
-        <h2 className="text-2xl font-bold mb-4 text-center">All Maintenance Updates</h2>
+        <h2 className="text-3xl font-extrabold text-white text-center mb-10 tracking-wide w-full">All Maintenance Updates</h2>
 
         {isLoading ? (
-          <div className="text-center py-4">Loading updates...</div>
+          <div className="text-center py-4 text-white">Loading updates...</div>
         ) : error ? (
-          <div className="text-center py-4 text-red-500">Error loading updates: {error}</div>
+          <div className="text-center py-4 text-red-400">Error loading updates: {error}</div>
         ) : maintenanceUpdates.length === 0 ? (
-          <div className="text-center py-4">No maintenance updates available.</div>
+          <div className="text-center py-4 text-white">No maintenance updates available.</div>
         ) : (
           <div className="space-y-4">
             {maintenanceUpdates.map(update => (
               <div 
                 key={update.id} // Assuming updates have an id
-                className="p-3 rounded-lg border border-gray-200"
+                className="py-2"
               >
-                <h3 className="text-lg font-semibold">{update.title}</h3> {/* Assuming title field */}
-                <p className="text-gray-700">{update.description}</p> {/* Assuming description field */}
-                <p className="text-sm text-gray-500">Date: {new Date(update.date).toLocaleDateString()}</p> {/* Assuming date field */}
+                <h3 className="text-lg font-bold text-white leading-tight">{update.title}</h3> {/* Assuming title field */}
+                <p className="text-gray-400 mt-1 leading-tight">{update.description}</p> {/* Assuming description field */}
+                <p className="text-xs text-gray-500 mt-1 leading-tight">Date: {new Date(update.date).toLocaleDateString()}</p> {/* Assuming date field */}
               </div>
             ))}
           </div>
