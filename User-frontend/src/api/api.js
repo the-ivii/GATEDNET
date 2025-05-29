@@ -3,7 +3,7 @@ import axios from 'axios';
 // This file contains all API calls and mock implementations for the application
 
 // In a real application, this would be set via environment variables
-const API_URL = 'http://localhost:5001/api/member';
+const API_URL = 'https://gatednett.onrender.com/api/member';
 
 // Create axios instance with default config
 const api = axios.create({

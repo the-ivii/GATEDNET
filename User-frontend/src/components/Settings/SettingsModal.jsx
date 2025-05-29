@@ -55,37 +55,39 @@ const SettingsModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+      <div className="bg-navy-900 rounded-3xl p-10 w-full max-w-xl max-h-[90vh] overflow-y-auto relative shadow-2xl border border-navy-800">
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+          className="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-light focus:outline-none"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-        </div>
+        <h2 className="text-3xl font-extrabold text-white text-center mb-10 tracking-wide w-full">Settings</h2>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* User Info Section */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">User Information</h3>
+          <div className="bg-navy-800 p-6 rounded-2xl shadow border border-navy-700">
+            <h3 className="text-lg font-bold text-white mb-4">User Information</h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <p className="mt-1 text-gray-900">{user?.email || 'Loading email...'}</p>
+                <label className="block text-sm font-medium text-blue-200">Email</label>
+                <p className="mt-1 text-white font-semibold">{user?.email || 'Loading email...'}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-blue-200">Flat No.</label>
+                <p className="mt-1 text-white font-semibold">{user?.flat || user?.flatNumber || 'Loading flat number...'}</p>
               </div>
             </div>
           </div>
 
           {/* Password Update Section */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Password</h3>
+          <div className="bg-navy-800 p-6 rounded-2xl shadow border border-navy-700">
+            <h3 className="text-lg font-bold text-white mb-4">Update Password</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="currentPassword" className="block text-sm font-medium text-blue-200">
                   Current Password
                 </label>
                 <input
@@ -94,13 +96,13 @@ const SettingsModal = ({ isOpen, onClose }) => {
                   name="currentPassword"
                   value={formData.currentPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-xl border-navy-700 bg-navy-900 text-white placeholder-blue-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="newPassword" className="block text-sm font-medium text-blue-200">
                   New Password
                 </label>
                 <input
@@ -109,13 +111,13 @@ const SettingsModal = ({ isOpen, onClose }) => {
                   name="newPassword"
                   value={formData.newPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-xl border-navy-700 bg-navy-900 text-white placeholder-blue-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-blue-200">
                   Confirm New Password
                 </label>
                 <input
@@ -124,13 +126,13 @@ const SettingsModal = ({ isOpen, onClose }) => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-xl border-navy-700 bg-navy-900 text-white placeholder-blue-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               {(passwordError || error) && (
-                <div className="text-red-600 text-sm">
+                <div className="text-red-400 text-sm">
                   {passwordError || error}
                 </div>
               )}
@@ -138,7 +140,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 font-bold text-lg tracking-wide"
               >
                 {isLoading ? 'Updating...' : 'Update Password'}
               </button>
